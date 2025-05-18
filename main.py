@@ -28,14 +28,14 @@ if not st.session_state.login_success:
             st.session_state.username = username
             st.session_state.name = user_info["name"]
             st.success(f"Bienvenue {user_info['name']} 👋")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Identifiants incorrects")
 else:
     st.sidebar.write(f"👤 Connecté en tant que {st.session_state.name}")
     if st.sidebar.button("Se déconnecter"):
         st.session_state.clear()
-        st.experimental_rerun()
+        st.rerun()
 
     # 👉 Import and run the app
     from job_helper_app import run_job_helper_app
