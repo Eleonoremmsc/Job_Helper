@@ -55,9 +55,23 @@ def run_job_helper_app():
     if st.session_state.step == "input_mode":
         user_data = st.session_state.get("user_data", {})
         
-        if user_data:
-            # Create a full summary-style string from user data
-            prefilled_summary = f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+        user_data = st.session_state.get("user_data", {})
+    if user_data:
+        with st.expander("👤 Informations sauvegardées", expanded=False):
+            st.markdown(f"""
+            **Nom :** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
+            **Téléphone :** {user_data.get("phone", "")}  
+            **Email :** {user_data.get("email", "")}  
+            **Ville :** {user_data.get("location", "")}  
+            **Âge :** {user_data.get("age", "")}  
+            **Description :** {user_data.get("description", "")[:100]}...
+            """)
+            if st.button("✏️ Modifier mes informations"):
+                st.session_state.step = "form_input"
+    
+        if st.session_state.step == "edit_text_block":
+            editable_block = st.text_area("Modifiez vos informations textuelles :",
+                value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
     Téléphone: {user_data.get("phone", "")}
     Email: {user_data.get("email", "")}
     Âge: {user_data.get("age", "")}
@@ -65,15 +79,20 @@ def run_job_helper_app():
     Description: {user_data.get("description", "")}
     Éducation: {user_data.get("education", "")}
     Compétences: {user_data.get("skills", "")}
-    Expérience: {user_data.get("experience", "")}"""
-    
-            with st.expander("Vos informations sauvegardées", expanded=True):
-                modified = st.text_area("Modifier vos informations ci-dessous", value=prefilled_summary, height=300)
-                if st.button("Mettre à jour mes informations"):
-                    # Optional: Parse the edited block back into user_data fields
-                    st.session_state.user_data["summary"] = modified
-                    st.session_state.step = "recommend"
-                    st.rerun()
+    Expérience: {user_data.get("experience", "")}""",
+                height=300
+            )
+            if st.button("Mettre à jour mes informations"):
+                # Save the full summary block into user_data
+                st.session_state.user_data["summary"] = editable_block
+                st.session_state.user_data["last_updated"] = datetime.now().isoformat()
+                all_data = load_user_data()
+                all_data[st.session_state.username] = st.session_state.user_data
+                save_user_data(all_data)
+                st.success("✅ Informations mises à jour.")
+                st.session_state.step = "recommend"
+                st.rerun()
+
     
         else:
             # Fallback: show input mode radio if no saved data
