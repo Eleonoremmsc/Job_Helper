@@ -52,6 +52,8 @@ def run_job_helper_app():
     # Step 2B: Il utilise les Champs classiques
     if st.session_state.step == "form_input":
         with st.form("profile_form"):
+            phone = st.text_input("Téléphone", "06 12 34 56 78" if DEBUG_MODE else "")
+            email = st.text_input("Email", "jeanne@example.com" if DEBUG_MODE else "")
             first_name = st.text_input("Prénom", "Jeanne" if DEBUG_MODE else "")
             last_name = st.text_input("Nom", "Dupont" if DEBUG_MODE else "")
             age = st.number_input("Âge", min_value=0, max_value=120, value=32 if DEBUG_MODE else 0)
@@ -64,6 +66,8 @@ def run_job_helper_app():
 
         if submitted:
             st.session_state.user_data = {
+                "phone": phone.strip(),
+                "email": email.strip(),
                 "first_name": first_name.strip(),
                 "last_name": last_name.strip(),
                 "age": age,
@@ -229,14 +233,21 @@ def run_job_helper_app():
         font.name = "Arial"
         font.size = Pt(11)
         doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
+        doc.add_paragraph(f"Téléphone : {user.get('phone', '')} | Email : {user.get('email', '')}")
         def add_section(title, content):
             if content:
+                doc.add_paragraph("")  # Spacer
                 p_title = doc.add_paragraph()
                 run_title = p_title.add_run(f"{title} :")
                 run_title.bold = True
-                doc.add_paragraph("")  # Spacer
-                doc.add_paragraph(content)
-                doc.add_paragraph("")  # Spacer
+
+                lines = [line.strip("-• ").strip() for line in content.strip().split("\n") if line.strip()]
+                if len(lines) > 1:
+                    for line in lines:
+                        doc.add_paragraph(line, style='List Bullet')
+                else:
+                    doc.add_paragraph(content.strip())
+
 
         # Break down profile_text into parts (simple logic for now)
         sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
