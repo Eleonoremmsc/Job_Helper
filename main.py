@@ -5,23 +5,37 @@ from job_helper_app import run_job_helper_app
 import yaml
 from yaml.loader import SafeLoader
 
+
+# Load credentials
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    'cookie_name',
-    'cookie_key',
-    cookie_expiry_days=30
-)
+# Handle login state
+if "login_success" not in st.session_state:
+    st.session_state.login_success = False
 
-name, authentication_status, username = authenticator.login(location="main", form_name="Connexion")
+if not st.session_state.login_success:
+    st.title("🔐 Connexion")
+    username = st.text_input("Nom d'utilisateur")
+    password = st.text_input("Mot de passe", type="password")
+    login_button = st.button("Se connecter")
 
-if authentication_status == False:
-    st.error("Mot de passe incorrect")
-elif authentication_status == None:
-    st.warning("Entrez vos identifiants")
-elif authentication_status:
-    authenticator.logout("Se déconnecter", "sidebar")
-    st.success(f"Bienvenue {name} 👋")
+    if login_button:
+        user_info = config["credentials"]["usernames"].get(username)
+        if user_info and bcrypt.checkpw(password.encode(), user_info["password"].encode()):
+            st.session_state.login_success = True
+            st.session_state.username = username
+            st.session_state.name = user_info["name"]
+            st.success(f"Bienvenue {user_info['name']} 👋")
+            st.experimental_rerun()
+        else:
+            st.error("Identifiants incorrects")
+else:
+    st.sidebar.write(f"👤 Connecté en tant que {st.session_state.name}")
+    if st.sidebar.button("Se déconnecter"):
+        st.session_state.clear()
+        st.experimental_rerun()
+
+    # 👉 Import and run the app
+    from job_helper_app import run_job_helper_app
     run_job_helper_app()
