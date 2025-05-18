@@ -4,6 +4,7 @@ from auth_config import load_auth_config
 from job_helper_app import run_job_helper_app
 import yaml
 from yaml.loader import SafeLoader
+import bcrypt
 
 
 # Load credentials
