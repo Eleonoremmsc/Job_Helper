@@ -3,6 +3,8 @@ from openai import OpenAI
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from utils import load_user_data, save_user_data
+
 
 def run_job_helper_app():
 
