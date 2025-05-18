@@ -46,6 +46,37 @@ def run_job_helper_app():
     # Step 1: Choice of input mode
     # Choix pour le user: insérer un texte qui le décrit en total, ou répondre à chaque bloc pour être guidé
     if st.session_state.step == "input_mode":
+        user_data = st.session_state.get("user_data", {})
+        
+        if user_data:
+            # Create a full summary-style string from user data
+            prefilled_summary = f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+    Téléphone: {user_data.get("phone", "")}
+    Email: {user_data.get("email", "")}
+    Âge: {user_data.get("age", "")}
+    Ville: {user_data.get("location", "")}
+    Description: {user_data.get("description", "")}
+    Éducation: {user_data.get("education", "")}
+    Compétences: {user_data.get("skills", "")}
+    Expérience: {user_data.get("experience", "")}"""
+    
+            with st.expander("Vos informations sauvegardées", expanded=True):
+                modified = st.text_area("Modifier vos informations ci-dessous", value=prefilled_summary, height=300)
+                if st.button("Mettre à jour mes informations"):
+                    # Optional: Parse the edited block back into user_data fields
+                    st.session_state.user_data["summary"] = modified
+                    st.session_state.step = "recommend"
+                    st.rerun()
+    
+        else:
+            # Fallback: show input mode radio if no saved data
+            mode = st.radio(
+                "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
+                ["Résumé global", "Questions une par une"]
+            )
+            st.session_state.input_mode = mode
+            if st.button("Continuer"):
+                st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
         if user_data:
             with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
                 st.markdown(f"""
