@@ -2,3 +2,5 @@ streamlit
 openai
 fpdf
 python-docx
+streamlit-authenticator
+
