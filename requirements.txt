@@ -2,5 +2,6 @@ streamlit
 openai
 fpdf
 python-docx
-streamlit-authenticator==0.3.3
+streamlit-authenticator==0.4.2
+PyYAML
 
