@@ -5,6 +5,8 @@ from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from utils import load_user_data, save_user_data
 from datetime import datetime
+from PIL import Image
+
 
 
 
@@ -18,8 +20,13 @@ def run_job_helper_app():
     client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
     # Configuration App Streamlit
-    st.title("🤝 Aide à la candidature")
-        
+
+    col1, col2 = st.columns([1, 10])
+    with col1:
+        st.image("67ae3ddc-8a4d-482c-994c-a86ecc09d5de.png", width=40)
+    with col2:
+        st.title("Aide à la candidature")    
+            
     user_data = st.session_state.user_data
     if user_data:
         st.success("✅ Profil chargé automatiquement à partir de vos informations enregistrées.")
