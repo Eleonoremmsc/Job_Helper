@@ -3,8 +3,8 @@ credentials:
     alice:
       email: alice@example.com
       name: Alice
-      password: abc123  # use hashed passwords for real apps
+      password: $2b$12$9fTU/T1nD8nZ/bvttkoVnu6BcNsICMwIlCTOD2kbNkqxScbRgNljO  # use hashed passwords for real apps
     bob:
       email: bob@example.com
       name: Bob
-      password: def456
+      password: $2b$12$9fTU/T1nD8nZ/bvttkoVnu6BcNsICMwIlCTOD2kbNkqxScbRgNljO
