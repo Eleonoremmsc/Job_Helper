@@ -6,3 +6,5 @@ streamlit-authenticator==0.4.2
 PyYAML
 bcrypt
 Pillow
+gspread
+oauth2client

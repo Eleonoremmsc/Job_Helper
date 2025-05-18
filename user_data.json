@@ -1,10 +1,12 @@
 {
   "alice": {
+    "last_name": "Dubois",
+    "first_name": "Alice",
     "description": "Je suis motivée...",
     "education": "CAP Cuisine",
     "skills": "Ponctualité, gestion de caisse",
     "experience": "Serveuse (2 ans)",
-    "phone": "0123456789",
-    "email": "alice@example.com"
+    "phone": "+33 34 56 78 90",
+    "email": "alicedubois@alberthon.com"
   }
 }

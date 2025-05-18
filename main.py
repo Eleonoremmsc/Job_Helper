@@ -5,6 +5,7 @@ import yaml
 from yaml.loader import SafeLoader
 import bcrypt
 from utils import load_user_data, save_user_data
+from create_account import create_account
 
 # Load credentials
 with open('config.yaml') as file:
@@ -43,19 +44,23 @@ else:
     # Show sidebar menu
     menu_option = st.sidebar.radio("Menu", ["📄 Mon CV", "📂 Mes candidatures", "🎤 Préparation aux entretiens"])
     
+    if st.sidebar.button("Créer un compte"):
+        create_account()
+        st.stop()
+
     if menu_option == "📄 Mon CV":
         from job_helper_app import run_job_helper_app
         run_job_helper_app()
-    
+
     elif menu_option == "📂 Mes candidatures":
         st.subheader("📂 Mes candidatures")
         st.write("À venir : un espace pour voir, modifier et suivre vos candidatures envoyées.")
-    
+
     elif menu_option == "🎤 Préparation aux entretiens":
         st.subheader("🎤 Préparation aux entretiens")
         st.write("Fonctionnalité en cours de développement : exemples de questions, enregistrement vocal, et retours personnalisés.")
-    
-    
+
+
     # Run app
     from job_helper_app import run_job_helper_app
     run_job_helper_app()
