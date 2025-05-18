@@ -23,7 +23,7 @@ def run_job_helper_app():
 
     col1, col2 = st.columns([1, 10])
     with col1:
-        st.image("67ae3ddc-8a4d-482c-994c-a86ecc09d5de.png", width=40)
+        st.image("assets/red_cross.png", width=40)
     with col2:
         st.title("Aide à la candidature")    
             
