@@ -17,9 +17,7 @@ authenticator = stauth.Authenticate(
 
 name, auth_status, username = authenticator.login(location='main', form_name='Connexion')
 
-if auth_status:
-    st.success(f"Bienvenue {name} 👋")
-
+def run_job_helper_app():
 
     # DEBUG_MODE = True si tu veux modifier l'appli sans utiliser ChatGPT à chaque fois (Tokens)
     DEBUG_MODE = False
@@ -268,6 +266,11 @@ if auth_status:
 
         with open("mon_cv.docx", "rb") as f:
             st.download_button("📥 Télécharger le CV (.docx)", f, file_name="mon_cv.docx")
+            
+if auth_status:
+    st.success(f"Bienvenue {name} 👋")
+    authenticator.logout("Se déconnecter", "sidebar")
+    run_job_helper_app()
 
 elif auth_status is False:
     st.error("Mot de passe incorrect")
