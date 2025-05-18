@@ -130,34 +130,34 @@ Expérience: {user.get('experience', '')}
         ]
 
     for i, rec in enumerate(st.session_state.recommendations):
-    if rec:
-        with st.container():
-            st.markdown(f"**👉 {i+1}. {rec}**")
-
-            col1, col2, col3 = st.columns([1, 1, 2])
-
-            with col1:
-                if st.button("✅ Accepter", key=f"accept_{i}"):
-                    st.session_state.accepted_suggestions.append(rec)
-                    st.session_state.recommendations[i] = None
-                    st.rerun()
-
-            with col2:
-                if st.button("✏️ Modifier", key=f"mod_button_{i}"):
-                    st.session_state[f"modifying_{i}"] = True
-
-            with col3:
-                if st.button("❌ Rejeter", key=f"reject_{i}"):
-                    st.session_state.recommendations[i] = None
-                    st.rerun()
-
-            if st.session_state.get(f"modifying_{i}", False):
-                new_text = st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
-                if st.button("💾 Enregistrer", key=f"save_mod_{i}"):
-                    st.session_state.accepted_suggestions.append(new_text)
-                    st.session_state.recommendations[i] = None
-                    st.session_state[f"modifying_{i}"] = False
-                    st.rerun()
+        if rec:
+            with st.container():
+                st.markdown(f"**👉 {i+1}. {rec}**")
+    
+                col1, col2, col3 = st.columns([1, 1, 2])
+    
+                with col1:
+                    if st.button("✅ Accepter", key=f"accept_{i}"):
+                        st.session_state.accepted_suggestions.append(rec)
+                        st.session_state.recommendations[i] = None
+                        st.rerun()
+    
+                with col2:
+                    if st.button("✏️ Modifier", key=f"mod_button_{i}"):
+                        st.session_state[f"modifying_{i}"] = True
+    
+                with col3:
+                    if st.button("❌ Rejeter", key=f"reject_{i}"):
+                        st.session_state.recommendations[i] = None
+                        st.rerun()
+    
+                if st.session_state.get(f"modifying_{i}", False):
+                    new_text = st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
+                    if st.button("💾 Enregistrer", key=f"save_mod_{i}"):
+                        st.session_state.accepted_suggestions.append(new_text)
+                        st.session_state.recommendations[i] = None
+                        st.session_state[f"modifying_{i}"] = False
+                        st.rerun()
 
     if all(r is None for r in st.session_state.recommendations):
         if st.button("➡️ Continuer vers la génération du PDF"):
