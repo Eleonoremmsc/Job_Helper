@@ -130,26 +130,34 @@ Expérience: {user.get('experience', '')}
         ]
 
     for i, rec in enumerate(st.session_state.recommendations):
-        if rec:
-            col1, col2, col3, col4 = st.columns([4, 1, 1, 1])
+    if rec:
+        with st.container():
+            st.markdown(f"**👉 {i+1}. {rec}**")
+
+            col1, col2, col3 = st.columns([1, 1, 2])
+
             with col1:
-                st.write(f"👉 {rec}")
-            with col2:
-                if st.button("✅", key=f"accept_{i}"):
+                if st.button("✅ Accepter", key=f"accept_{i}"):
                     st.session_state.accepted_suggestions.append(rec)
                     st.session_state.recommendations[i] = None
                     st.rerun()
+
+            with col2:
+                if st.button("✏️ Modifier", key=f"mod_button_{i}"):
+                    st.session_state[f"modifying_{i}"] = True
+
             with col3:
-                if st.button("❌", key=f"reject_{i}"):
+                if st.button("❌ Rejeter", key=f"reject_{i}"):
                     st.session_state.recommendations[i] = None
-                    st.rerun()
-            with col4:
-                new_value = st.text_input("✏️ Modifier", key=f"modify_input_{i}", label_visibility="collapsed", placeholder="Modifier...")
-                if st.button("Enregistrer", key=f"save_mod_{i}") and new_value:
-                    st.session_state.recommendations[i] = None
-                    st.session_state.accepted_suggestions.append(new_value)
                     st.rerun()
 
+            if st.session_state.get(f"modifying_{i}", False):
+                new_text = st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
+                if st.button("💾 Enregistrer", key=f"save_mod_{i}"):
+                    st.session_state.accepted_suggestions.append(new_text)
+                    st.session_state.recommendations[i] = None
+                    st.session_state[f"modifying_{i}"] = False
+                    st.rerun()
 
     if all(r is None for r in st.session_state.recommendations):
         if st.button("➡️ Continuer vers la génération du PDF"):
@@ -168,12 +176,15 @@ if st.session_state.step == "generate":
     if st.session_state.accepted_suggestions:
         sections.append("➕ Informations ajoutées :\n- " + "\n- ".join(st.session_state.accepted_suggestions))
 
+    all_skills = user.get('skills', '')
+    if st.session_state.accepted_suggestions:
+        all_skills += "\n" + "\n".join(st.session_state.accepted_suggestions)
+
     profile_input = f"""
     Description: {user.get('description', '')}
     Éducation: {user.get('education', '')}
-    Compétences: {user.get('skills', '')}
+    Compétences: {all_skills}
     Expérience: {user.get('experience', '')}
-    Suggestions supplémentaires: {' | '.join(st.session_state.accepted_suggestions or [])}
     """
 
     reformulate_prompt = f"""
