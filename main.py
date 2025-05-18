@@ -4,6 +4,7 @@ from auth_config import load_auth_config
 from job_helper_app import run_job_helper_app
 import yaml
 from yaml.loader import SafeLoader
+st.write(stauth.__version__)
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
