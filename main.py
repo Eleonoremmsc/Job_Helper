@@ -16,7 +16,7 @@ authenticator = stauth.Authenticate(
 )
 
 name, auth_status = authenticator.login("main", "Connexion")
-
+username = authenticator.username
 
 if auth_status:
     st.success(f"Bienvenue {name} 👋")
