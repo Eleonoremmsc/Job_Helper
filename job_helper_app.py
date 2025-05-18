@@ -4,6 +4,8 @@ from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from utils import load_user_data, save_user_data
+from datetime import datetime
+
 
 
 def run_job_helper_app():
@@ -31,10 +33,31 @@ def run_job_helper_app():
         st.session_state.recommendations = []
     if "accepted_suggestions" not in st.session_state:
         st.session_state.accepted_suggestions = []
+        
+    user_data = st.session_state.user_data
+    if user_data:
+        st.success("✅ Profil chargé automatiquement à partir de vos informations enregistrées.")
+        if "last_updated" in user_data:
+            st.caption(f"Dernière mise à jour : {user_data['last_updated'][:16].replace('T', ' à ')}")
+    else:
+        st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
+
 
     # Step 1: Choice of input mode
     # Choix pour le user: insérer un texte qui le décrit en total, ou répondre à chaque bloc pour être guidé
     if st.session_state.step == "input_mode":
+        if user_data:
+            with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
+                st.markdown(f"""
+                **Nom:** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
+                **Ville:** {user_data.get("location", "")}  
+                **Téléphone:** {user_data.get("phone", "")}  
+                **Email:** {user_data.get("email", "")}  
+                **Description:** {user_data.get("description", "")[:100]}...
+                """)
+        if st.button("📝 Modifier mes informations"):
+            st.session_state.step = "form_input"
+        
         mode = st.radio("Souhaitez-vous entrer un résumé ou remplir les informations une par une ?", ["Résumé global", "Questions une par une"])
         st.session_state.input_mode = mode
         if st.button("Continuer"):
@@ -77,7 +100,9 @@ def run_job_helper_app():
                 "description": description.strip(),
                 "education": education.strip(),
                 "skills": skills.strip(),
-                "experience": experience.strip()
+                "experience": experience.strip(),
+                "last_updated": datetime.now().isoformat()
+
             }
             # Save to persistent storage
             all_data = load_user_data()
@@ -246,8 +271,8 @@ def run_job_helper_app():
         font.name = "Arial"
         font.size = Pt(11)
         doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
-#        phone = user.get("phone", "")
-#        email = user.get("email", "")
+        phone = user.get("phone", "")
+        email = user.get("email", "")
         if phone or email:
             contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
             doc.add_paragraph(contact_line)
