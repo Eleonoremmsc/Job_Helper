@@ -15,5 +15,4 @@ __pycache__/
 
 # Local-only scripts and backups
 secrets_1.py
-job_helper_*.py
 dejavu-sans-ttf-2.37/
