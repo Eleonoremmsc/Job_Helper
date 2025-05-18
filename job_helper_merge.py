@@ -92,14 +92,27 @@ Expérience: {user.get('experience', '')}
     if not st.session_state.recommendations and not DEBUG_MODE:
         with st.spinner("Analyse de votre profil pour suggestions..."):
             prompt = f"""
-Tu es un assistant bienveillant. Voici un profil :
-{content}
-
-Propose 5 ajouts logiques et pertinents qui pourraient améliorer ce profil.
-Exprime chaque proposition comme une question très simple. Exemple :
-- Puis-je ajouter que vous avez travaillé avec des enfants ?
-- Puis-je ajouter que vous parlez anglais ?
-"""
+        Tu es un assistant bienveillant qui aide à enrichir des profils pour un CV.
+        Voici un profil utilisateur :
+        
+        {content}
+        
+        Propose 5 éléments précis que je pourrais ajouter à ce profil sous forme de questions simples.
+        Chaque question doit être :
+        - très claire,
+        - sur un point unique et précis (ex : "Puis-je ajouter que vous parlez espagnol ?"),
+        - directement ajoutable à un CV si la réponse est oui.
+        
+        N’utilise pas de formulations vagues comme “des langues étrangères” ou “des langages de programmation”.
+        Choisis un seul exemple concret par question.
+        
+        Exemples :
+        - Puis-je ajouter que vous avez le permis B ?
+        - Puis-je ajouter que vous parlez espagnol ?
+        - Puis-je ajouter que vous savez utiliser Excel ?
+        - Puis-je ajouter que vous avez déjà travaillé avec des enfants ?
+        
+        """
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}]
@@ -118,8 +131,9 @@ Exprime chaque proposition comme une question très simple. Exemple :
 
     for i, rec in enumerate(st.session_state.recommendations):
         if rec:
-            col1, col2, col3 = st.columns([5, 1, 1])
-            with col1: st.write(f"👉 {rec}")
+            col1, col2, col3, col4 = st.columns([4, 1, 1, 1])
+            with col1:
+                st.write(f"👉 {rec}")
             with col2:
                 if st.button("✅", key=f"accept_{i}"):
                     st.session_state.accepted_suggestions.append(rec)
@@ -129,6 +143,13 @@ Exprime chaque proposition comme une question très simple. Exemple :
                 if st.button("❌", key=f"reject_{i}"):
                     st.session_state.recommendations[i] = None
                     st.rerun()
+            with col4:
+                new_value = st.text_input("✏️ Modifier", key=f"modify_input_{i}", label_visibility="collapsed", placeholder="Modifier...")
+                if st.button("Enregistrer", key=f"save_mod_{i}") and new_value:
+                    st.session_state.recommendations[i] = None
+                    st.session_state.accepted_suggestions.append(new_value)
+                    st.rerun()
+
 
     if all(r is None for r in st.session_state.recommendations):
         if st.button("➡️ Continuer vers la génération du PDF"):
