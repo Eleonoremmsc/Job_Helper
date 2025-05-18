@@ -86,6 +86,8 @@ def run_job_helper_app():
 
         content = user.get("summary", "") or f"""
     Nom: {user.get('first_name', '')} {user.get('last_name', '')}
+    Téléphone: {user.get('phone', '')}
+    Email: {user.get('email', '')}
     Âge: {user.get('age', '')}
     Lieu: {user.get('location', '')}
     Description: {user.get('description', '')}
@@ -233,7 +235,12 @@ def run_job_helper_app():
         font.name = "Arial"
         font.size = Pt(11)
         doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
-        doc.add_paragraph(f"Téléphone : {user.get('phone', '')} | Email : {user.get('email', '')}")
+        phone = user.get("phone", "")
+        email = user.get("email", "")
+        if phone or email:
+            contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
+            doc.add_paragraph(contact_line)
+
         def add_section(title, content):
             if content:
                 doc.add_paragraph("")  # Spacer
@@ -242,11 +249,13 @@ def run_job_helper_app():
                 run_title.bold = True
 
                 lines = [line.strip("-• ").strip() for line in content.strip().split("\n") if line.strip()]
-                if len(lines) > 1:
-                    for line in lines:
-                        doc.add_paragraph(line, style='List Bullet')
+                if title in ["Compétences", "Expérience"]:
+                    for line in content.split("\n"):
+                        if line.strip():
+                            doc.add_paragraph(line.strip(), style="List Bullet")
                 else:
-                    doc.add_paragraph(content.strip())
+                    doc.add_paragraph(content)
+
 
 
         # Break down profile_text into parts (simple logic for now)
