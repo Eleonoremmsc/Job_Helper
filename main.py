@@ -15,15 +15,13 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-name, authentication_status = authenticator.login("main", "Connexion")
-username = authenticator.username
+name, authentication_status, username = authenticator.login("Connexion", location="main")
 
-if authentication_status:
-    username = st.session_state["username"]
-    st.success(f"Bienvenue {name} 👋 (utilisateur: {username})")
-    authenticator.logout("Se déconnecter", "sidebar")
-    run_job_helper_app()
-elif authentication_status is False:
+if authentication_status == False:
     st.error("Mot de passe incorrect")
-elif authentication_status is None:
+elif authentication_status == None:
     st.warning("Entrez vos identifiants")
+elif authentication_status:
+    authenticator.logout("Se déconnecter", "sidebar")
+    st.success(f"Bienvenue {name} 👋")
+    run_job_helper_app()
