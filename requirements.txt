@@ -4,4 +4,4 @@ fpdf
 python-docx
 streamlit-authenticator==0.4.2
 PyYAML
-
+bcrypt
