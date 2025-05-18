@@ -1,3 +1,4 @@
+credentials.json
 .streamlit/secrets.toml
 # Mac system file
 .DS_Store
