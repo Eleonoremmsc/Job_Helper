@@ -153,12 +153,14 @@ def run_job_helper_app():
                             st.rerun()
 
                     if st.session_state.get(f"modifying_{i}", False):
-                        new_text = st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
+                        st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
                         if st.button("💾 Enregistrer", key=f"save_mod_{i}"):
-                            st.session_state.accepted_suggestions.append(new_text)
+                            modified = st.session_state[f"mod_text_{i}"]
+                            st.session_state.accepted_suggestions.append(modified)
                             st.session_state.recommendations[i] = None
                             st.session_state[f"modifying_{i}"] = False
                             st.rerun()
+
 
         if all(r is None for r in st.session_state.recommendations):
             if st.button("➡️ Continuer vers la génération du PDF"):
