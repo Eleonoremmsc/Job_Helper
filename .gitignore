@@ -1,0 +1,19 @@
+.streamlit/secrets.toml
+# Mac system file
+.DS_Store
+
+# Fonts & Models
+*.ttf
+*.pkl
+
+# Local dev/test files
+*.pdf
+*.docx
+*.pyc
+__pycache__/
+*.ipynb
+
+# Local-only scripts and backups
+secrets_1.py
+job_helper_*.py
+dejavu-sans-ttf-2.37/
