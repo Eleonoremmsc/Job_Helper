@@ -15,7 +15,7 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-name, auth_status, username = authenticator.login('main', 'Connexion')
+name, auth_status, username = authenticator.login(location='main', form_name='Connexion')
 
 if auth_status:
     st.success(f"Bienvenue {name} 👋")
