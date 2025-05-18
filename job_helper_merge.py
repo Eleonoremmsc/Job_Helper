@@ -4,14 +4,13 @@ from fpdf import FPDF
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from secrets_1 import OPENAI_KEY
 
 # DEBUG_MODE = True si tu veux modifier l'appli sans utiliser ChatGPT à chaque fois (Tokens)
 DEBUG_MODE = False
 FONT_PATH = "DejaVuSans.ttf"
 
 # Setup OpenAI
-client = OpenAI(api_key=OPENAI_KEY)
+client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
 # Configuration App Streamlit
 st.title("🤝 Aide à la candidature")
