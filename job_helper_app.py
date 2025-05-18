@@ -77,6 +77,11 @@ def run_job_helper_app():
                 "skills": skills.strip(),
                 "experience": experience.strip()
             }
+            # Save to persistent storage
+            all_data = load_user_data()
+            all_data[st.session_state.username] = st.session_state.user_data
+            save_user_data(all_data)
+
             st.session_state.step = "recommend"
 
     # Step 3: Basé sur l'input de l'utilisateur, GPT génère 5 simples recommandations de contenu qui match avec le profil
@@ -175,6 +180,10 @@ def run_job_helper_app():
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
         user = st.session_state.user_data
+        all_data = load_user_data()
+        saved_user = all_data.get(st.session_state.username, {})
+        accepted_suggestions = saved_user.get("accepted_suggestions", [])
+        
         st.subheader("📝 Résultat final")
 
         sections = []
@@ -235,8 +244,8 @@ def run_job_helper_app():
         font.name = "Arial"
         font.size = Pt(11)
         doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
-        phone = user.get("phone", "")
-        email = user.get("email", "")
+#        phone = user.get("phone", "")
+#        email = user.get("email", "")
         if phone or email:
             contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
             doc.add_paragraph(contact_line)
@@ -248,11 +257,14 @@ def run_job_helper_app():
                 run_title = p_title.add_run(f"{title} :")
                 run_title.bold = True
 
-                lines = [line.strip("-• ").strip() for line in content.strip().split("\n") if line.strip()]
                 if title in ["Compétences", "Expérience"]:
                     for line in content.split("\n"):
                         if line.strip():
                             doc.add_paragraph(line.strip(), style="List Bullet")
+                elif title == "Description":
+                    for line in content.split("."):
+                        if line.strip():
+                            doc.add_paragraph(line.strip() + ".")
                 else:
                     doc.add_paragraph(content)
 

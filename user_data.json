@@ -1,0 +1,10 @@
+{
+  "alice": {
+    "description": "Je suis motivée...",
+    "education": "CAP Cuisine",
+    "skills": "Ponctualité, gestion de caisse",
+    "experience": "Serveuse (2 ans)",
+    "phone": "0123456789",
+    "email": "alice@example.com"
+  }
+}
