@@ -19,6 +19,14 @@ def run_job_helper_app():
 
     # Configuration App Streamlit
     st.title("🤝 Aide à la candidature")
+        
+    user_data = st.session_state.user_data
+    if user_data:
+        st.success("✅ Profil chargé automatiquement à partir de vos informations enregistrées.")
+        if "last_updated" in user_data:
+            st.caption(f"Dernière mise à jour : {user_data['last_updated'][:16].replace('T', ' à ')}")
+    else:
+        st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
 
     if st.button("🔄 Recommencer"):
         st.session_state.clear()
@@ -33,14 +41,6 @@ def run_job_helper_app():
         st.session_state.recommendations = []
     if "accepted_suggestions" not in st.session_state:
         st.session_state.accepted_suggestions = []
-        
-    user_data = st.session_state.user_data
-    if user_data:
-        st.success("✅ Profil chargé automatiquement à partir de vos informations enregistrées.")
-        if "last_updated" in user_data:
-            st.caption(f"Dernière mise à jour : {user_data['last_updated'][:16].replace('T', ' à ')}")
-    else:
-        st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
 
 
     # Step 1: Choice of input mode
@@ -171,8 +171,8 @@ def run_job_helper_app():
         for i, rec in enumerate(st.session_state.recommendations):
             if rec:
                 with st.container():
+                    rec = rec.lstrip("0123456789. ").strip()
                     st.markdown(f"**👉 {i+1}. {rec}**")
-
                     col1, col2, col3 = st.columns([1, 1, 2])
 
                     with col1:
