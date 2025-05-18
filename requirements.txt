@@ -2,5 +2,5 @@ streamlit
 openai
 fpdf
 python-docx
-streamlit-authenticator>=0.2.3
+streamlit-authenticator==0.4.2
 
