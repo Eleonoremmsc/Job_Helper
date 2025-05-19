@@ -30,14 +30,20 @@ def create_account():
     st.title("Créer un compte")
     
     uid = generate_user_id()
-    username = st.text_input("Nom d'utilisateur")
-    name = st.text_input("Prénom ou nom complet")
+    name = st.text_input("Prénom")
     email = st.text_input("Email")
     password = st.text_input("Mot de passe", type="password")
     confirm = st.text_input("Confirmez le mot de passe", type="password")
     
+    existing_emails = sheet.col_values(4) 
+
+    if email in existing_emails:
+        st.error("Cet email est déjà utilisé.")
+        return
+
+    
     if st.button("Créer mon compte"):
-        if not (username and name and email and password and confirm):
+        if not (name and email and password and confirm):
             st.warning("Veuillez remplir tous les champs.")
             return
 
@@ -46,17 +52,15 @@ def create_account():
             return
 
         sheet = get_worksheet()
-        existing_usernames = sheet.col_values(1)  # Assuming username is in col 1
 
-        if username in existing_usernames:
-            st.error("Ce nom d'utilisateur existe déjà.")
+        if email in existing_emails:
+            st.error("Cet email est déjà utilisé.")
             return
 
         hashed_pw = hash_password(password)
 
         new_row = [
             uid,
-            username,
             name,
             email,
             hashed_pw,
@@ -65,4 +69,8 @@ def create_account():
         ]  # Fill with empty profile fields
 
         sheet.append_row(new_row)
-        st.success("Compte créé avec succès ! Vous pouvez maintenant vous connecter.")
+        st.success("Compte créé avec succès ! Vous êtes maintenant connecté.")
+        st.session_state.login_success = True
+        st.session_state.name = name
+        st.session_state.step = None  # Optional: reset step
+        st.rerun()
