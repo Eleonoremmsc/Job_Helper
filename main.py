@@ -6,6 +6,11 @@ from yaml.loader import SafeLoader
 import bcrypt
 from utils import load_user_data, save_user_data
 from create_account import create_account
+from utils.gspread_client import get_gspread_client
+
+client = get_gspread_client()
+sheet = client.open("Job_Assistant_Users").worksheet("Users") 
+
 
 # Load credentials
 with open('config.yaml') as file:

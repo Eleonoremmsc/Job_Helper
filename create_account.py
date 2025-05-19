@@ -5,7 +5,7 @@ from datetime import datetime
 import bcrypt
 
 # Constants
-SHEET_NAME = "users"  # Name of your sheet tab
+SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
 
 # Setup Google Sheets connection
 def get_worksheet():
