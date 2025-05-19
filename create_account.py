@@ -35,13 +35,6 @@ def create_account():
     password = st.text_input("Mot de passe", type="password")
     confirm = st.text_input("Confirmez le mot de passe", type="password")
     
-    existing_emails = sheet.col_values(4) 
-
-    if email in existing_emails:
-        st.error("Cet email est déjà utilisé.")
-        return
-
-    
     if st.button("Créer mon compte"):
         if not (name and email and password and confirm):
             st.warning("Veuillez remplir tous les champs.")
@@ -52,6 +45,7 @@ def create_account():
             return
 
         sheet = get_worksheet()
+        existing_emails = sheet.col_values(4) 
 
         if email in existing_emails:
             st.error("Cet email est déjà utilisé.")
