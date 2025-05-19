@@ -12,8 +12,9 @@ SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
 # Setup Google Sheets connection
 def get_worksheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds_dict = json.loads(st.secrets["gcp_service_account"])
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
+        st.secrets["gcp_service_account"], scope
+    )
     client = gspread.authorize(creds)
     sheet = client.open("JobHelperDB").worksheet(SHEET_NAME)
     return sheet
