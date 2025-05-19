@@ -17,3 +17,4 @@ __pycache__/
 # Local-only scripts and backups
 secrets_1.py
 dejavu-sans-ttf-2.37/
+credentials.json
