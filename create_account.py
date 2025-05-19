@@ -68,7 +68,5 @@ def create_account():
 
         sheet.append_row(new_row)
         st.success("Compte créé avec succès ! Vous êtes maintenant connecté.")
-        st.session_state.login_success = True
-        st.session_state.name = name
-        st.session_state.step = None  # Optional: reset step
+        st.session_state.step = None
         st.rerun()

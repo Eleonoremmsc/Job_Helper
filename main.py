@@ -29,24 +29,24 @@ if st.session_state.get("step") == "create_account":
     
 if not st.session_state.login_success:
     st.title("🔐 Connexion")
-    username = st.text_input("Nom d'utilisateur")
+    email = st.text_input("Email")
     password = st.text_input("Mot de passe", type="password")
 
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Se connecter"):
-            user_info = config["credentials"]["usernames"].get(username)
-            if user_info and bcrypt.checkpw(password.encode(), user_info["password"].encode()):
-                st.session_state.login_success = True
-                st.session_state.username = username
-                st.session_state.name = user_info["name"]
+            sheet_records = sheet.get_all_records()
+        user_info = next((row for row in sheet_records if row["Email"] == email), None)
 
-                # Load user data from saved JSON or Google Sheets
-                all_data = load_user_data()
-                st.session_state.user_data = all_data.get(username, {})
-                st.rerun()
-            else:
-                st.error("Identifiants incorrects")
+        if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
+            st.session_state.login_success = True
+            st.session_state.username = username
+            st.session_state.name = user_info["Name"]
+            st.session_state.user_data = {}
+            st.rerun()
+        else:
+            st.error("Identifiants incorrects")
+
     with col2:
         if st.button("Créer un compte"):
             st.session_state.step = "create_account"
