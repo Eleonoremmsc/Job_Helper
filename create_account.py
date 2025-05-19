@@ -4,6 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import bcrypt
 import uuid
+import json
 
 # Constants
 SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
@@ -11,7 +12,8 @@ SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
 # Setup Google Sheets connection
 def get_worksheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+    creds_dict = json.loads(st.secrets["gcp_service_account"])
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
     sheet = client.open("JobHelperDB").worksheet(SHEET_NAME)
     return sheet
