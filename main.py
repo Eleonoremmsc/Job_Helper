@@ -48,12 +48,13 @@ else:
     if st.sidebar.button("Se déconnecter"):
         st.session_state.clear()
         st.rerun()
-    # Show sidebar menu
-    menu_option = st.sidebar.radio("Menu", ["📄 Mon CV", "📂 Mes candidatures", "🎤 Préparation aux entretiens"])
-    
+        
     if st.sidebar.button("Créer un compte"):
         create_account()
         st.stop()
+        
+    # Show sidebar menu
+    menu_option = st.sidebar.radio("Menu", ["📄 Mon CV", "📂 Mes candidatures", "🎤 Préparation aux entretiens"])
 
     if menu_option == "📄 Mon CV":
         run_job_helper_app()

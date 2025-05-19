@@ -89,43 +89,42 @@ def run_job_helper_app():
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("💾 Enregistrer", key="save_edits"):
-                    if st.button("Mettre à jour mes informations", key="update_info_button"):
-                        # Parse edited text back into structured fields
-                        for line in editable_block.strip().split("\n"):
-                            if ":" in line:
-                                key, value = line.split(":", 1)
-                                key = key.strip().lower()
-                                value = value.strip()
-                                if "nom" in key:
-                                    parts = value.split()
-                                    st.session_state.user_data["first_name"] = parts[0] if parts else ""
-                                    st.session_state.user_data["last_name"] = " ".join(parts[1:]) if len(parts) > 1 else ""
-                                elif "téléphone" in key:
-                                    st.session_state.user_data["phone"] = value
-                                elif "email" in key:
-                                    st.session_state.user_data["email"] = value
-                                elif "âge" in key:
-                                    st.session_state.user_data["age"] = value
-                                elif "ville" in key:
-                                    st.session_state.user_data["location"] = value
-                                elif "description" in key:
-                                    st.session_state.user_data["description"] = value
-                                elif "éducation" in key:
-                                    st.session_state.user_data["education"] = value
-                                elif "compétences" in key:
-                                    st.session_state.user_data["skills"] = value
-                                elif "expérience" in key:
-                                    st.session_state.user_data["experience"] = value
+                    for line in editable_block.strip().split("\n"):
+                        if ":" in line:
+                            key, value = line.split(":", 1)
+                            key = key.strip().lower()
+                            value = value.strip()
+                            if "nom" in key:
+                                parts = value.split()
+                                st.session_state.user_data["first_name"] = parts[0] if parts else ""
+                                st.session_state.user_data["last_name"] = " ".join(parts[1:]) if len(parts) > 1 else ""
+                            elif "téléphone" in key:
+                                st.session_state.user_data["phone"] = value
+                            elif "email" in key:
+                                st.session_state.user_data["email"] = value
+                            elif "âge" in key:
+                                st.session_state.user_data["age"] = value
+                            elif "ville" in key:
+                                st.session_state.user_data["location"] = value
+                            elif "description" in key:
+                                st.session_state.user_data["description"] = value
+                            elif "éducation" in key:
+                                st.session_state.user_data["education"] = value
+                            elif "compétences" in key:
+                                st.session_state.user_data["skills"] = value
+                            elif "expérience" in key:
+                                st.session_state.user_data["experience"] = value
+                
+                    st.session_state.user_data["last_updated"] = datetime.now().isoformat()
+                    all_data = load_user_data()
+                    all_data[st.session_state.username] = st.session_state.user_data
+                    save_user_data(all_data)
+                
+                    st.success("✅ Informations mises à jour.")
+                    st.session_state.edit_mode = False
+                    st.session_state.step = "input_mode"
+                    st.rerun()
 
-                        # Save updates
-                        st.session_state.user_data["last_updated"] = datetime.now().isoformat()
-                        all_data = load_user_data()
-                        all_data[st.session_state.username] = st.session_state.user_data
-                        save_user_data(all_data)
-
-                        st.success("✅ Informations mises à jour.")
-                        st.session_state.step = "recommend"
-                        st.rerun()
 
             with col2:
                 if st.button("❌ Annuler", key="cancel_edits"):
