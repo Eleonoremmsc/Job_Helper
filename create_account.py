@@ -3,6 +3,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import bcrypt
+import uuid
 
 # Constants
 SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
@@ -15,10 +16,17 @@ def get_worksheet():
     sheet = client.open("JobHelperDB").worksheet(SHEET_NAME)
     return sheet
 
+def generate_user_id():
+    return str(uuid.uuid4())
+
+def hash_password(password):
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
 # Create account function
 def create_account():
     st.title("Créer un compte")
-
+    
+    uid = generate_user_id()
     username = st.text_input("Nom d'utilisateur")
     name = st.text_input("Prénom ou nom complet")
     email = st.text_input("Email")
@@ -41,9 +49,10 @@ def create_account():
             st.error("Ce nom d'utilisateur existe déjà.")
             return
 
-        hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        hashed_pw = hash_password(password)
 
         new_row = [
+            uid,
             username,
             name,
             email,

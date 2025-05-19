@@ -18,6 +18,12 @@ def save_user_data(all_data):
 def sync_to_sheet(user_data):
     client = get_gspread_client()
     sheet = client.open("Job_Assistant_Users").worksheet("Users")
+    
+    existing_ids = sheet.col_values(1)
+    
+    if user_data["id"] in existing_ids:
+        return 
+
     sheet.append_row([
         user_data.get("first_name", ""),
         user_data.get("last_name", ""),

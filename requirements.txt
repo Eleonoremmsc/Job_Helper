@@ -8,3 +8,4 @@ bcrypt
 Pillow
 gspread
 oauth2client
+uuid
