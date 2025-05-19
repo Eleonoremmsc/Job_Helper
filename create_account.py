@@ -7,16 +7,16 @@ import uuid
 import json
 
 # Constants
-SHEET_NAME = "Job_Assistant_Users"  # Name of your sheet tab
+SPREADSHEET_NAME = "Job_Assistant_Users"
+SHEET_NAME = "Users"
 
-# Setup Google Sheets connection
 def get_worksheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
         st.secrets["gcp_service_account"], scope
     )
     client = gspread.authorize(creds)
-    sheet = client.open("JobHelperDB").worksheet(SHEET_NAME)
+    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
     return sheet
 
 def generate_user_id():
