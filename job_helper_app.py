@@ -35,9 +35,10 @@ def run_job_helper_app():
     else:
         st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
 
-    if st.button("🔄 Recommencer"):
+    if st.button("🔄 Recommencer", key="restart_app"):
         st.session_state.clear()
         st.rerun()
+        
 
     # Contrôle la progression de l'appli et garde les inputs de l'utilisateur
     if "step" not in st.session_state:
@@ -50,25 +51,26 @@ def run_job_helper_app():
         st.session_state.accepted_suggestions = []
 
 
+    # Step 1: Choice of input mode
+    # Choix pour le user: insérer un texte qui le décrit en total, ou répondre à chaque bloc pour être guidé
     if st.session_state.step == "input_mode":
         user_data = st.session_state.get("user_data", {})
+        
+        user_data = st.session_state.get("user_data", {})
+    if user_data:
+        with st.expander("👤 Informations sauvegardées", expanded=False):
+            st.markdown(f"""
+            **Nom :** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
+            **Téléphone :** {user_data.get("phone", "")}  
+            **Email :** {user_data.get("email", "")}  
+            **Ville :** {user_data.get("location", "")}  
+            **Âge :** {user_data.get("age", "")}  
+            **Description :** {user_data.get("description", "")[:100]}...
+            """)
+            if st.button("✏️ Modifier mes informations"):
+                st.session_state.step = "form_input"
 
-        if user_data and not st.session_state.get("edit_mode", False):
-            with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
-                st.markdown(f"""
-                **Nom :** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
-                **Téléphone :** {user_data.get("phone", "")}  
-                **Email :** {user_data.get("email", "")}  
-                **Ville :** {user_data.get("location", "")}  
-                **Âge :** {user_data.get("age", "")}  
-                **Description :** {user_data.get("description", "")[:100]}...
-                """)
-                if st.button("✏️ Modifier mes informations", key="edit_btn"):
-                    st.session_state.edit_mode = True  # Activate edit mode
-                    st.rerun()
-
-        elif st.session_state.get("edit_mode", False):
-            st.subheader("✏️ Modifier mes informations sauvegardées")
+        if st.session_state.step == "edit_text_block":
             editable_block = st.text_area("Modifiez vos informations textuelles :",
                 value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
                         Téléphone: {user_data.get("phone", "")}
@@ -81,33 +83,72 @@ def run_job_helper_app():
                         Expérience: {user_data.get("experience", "")}""",
                                     height=300
                                 )
+            
+        if st.button("Mettre à jour mes informations", key="update_info_button"):
+            # Parse edited text back into structured fields
+            for line in editable_block.strip().split("\n"):
+                if ":" in line:
+                    key, value = line.split(":", 1)
+                    key = key.strip().lower()
+                    value = value.strip()
+                    if "nom" in key:
+                        parts = value.split()
+                        st.session_state.user_data["first_name"] = parts[0] if parts else ""
+                        st.session_state.user_data["last_name"] = " ".join(parts[1:]) if len(parts) > 1 else ""
+                    elif "téléphone" in key:
+                        st.session_state.user_data["phone"] = value
+                    elif "email" in key:
+                        st.session_state.user_data["email"] = value
+                    elif "âge" in key:
+                        st.session_state.user_data["age"] = value
+                    elif "ville" in key:
+                        st.session_state.user_data["location"] = value
+                    elif "description" in key:
+                        st.session_state.user_data["description"] = value
+                    elif "éducation" in key:
+                        st.session_state.user_data["education"] = value
+                    elif "compétences" in key:
+                        st.session_state.user_data["skills"] = value
+                    elif "expérience" in key:
+                        st.session_state.user_data["experience"] = value
 
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("💾 Enregistrer", key="save_edits"):
-                    st.session_state.user_data["summary"] = editable_block
-                    st.session_state.user_data["last_updated"] = datetime.now().isoformat()
-                    all_data = load_user_data()
-                    all_data[st.session_state.username] = st.session_state.user_data
-                    save_user_data(all_data)
-                    st.success("✅ Informations mises à jour.")
-                    st.session_state.edit_mode = False
-                    st.rerun()
-            with col2:
-                if st.button("❌ Annuler", key="cancel_edits"):
-                    st.session_state.edit_mode = False
-                    st.rerun()
+            # Save updates
+            st.session_state.user_data["last_updated"] = datetime.now().isoformat()
+            all_data = load_user_data()
+            all_data[st.session_state.username] = st.session_state.user_data
+            save_user_data(all_data)
 
+            st.success("✅ Informations mises à jour.")
+            st.session_state.step = "recommend"
+            st.rerun()
+
+
+    
         else:
-            # No data yet, so we ask how they want to input it
+            # Fallback: show input mode radio if no saved data
             mode = st.radio(
                 "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
                 ["Résumé global", "Questions une par une"]
             )
             st.session_state.input_mode = mode
-            if st.button("Continuer", key="continue_mode_choice"):
+            if st.button("Continuer"):
                 st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
-
+        if user_data:
+            with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
+                st.markdown(f"""
+                **Nom:** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
+                **Ville:** {user_data.get("location", "")}  
+                **Téléphone:** {user_data.get("phone", "")}  
+                **Email:** {user_data.get("email", "")}  
+                **Description:** {user_data.get("description", "")[:100]}...
+                """)
+        if st.button("📝 Modifier mes informations"):
+            st.session_state.step = "form_input"
+        
+        mode = st.radio("Souhaitez-vous entrer un résumé ou remplir les informations une par une ?", ["Résumé global", "Questions une par une"])
+        st.session_state.input_mode = mode
+        if st.button("Continuer"):
+            st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
 
     # Step 2A: Il soumets un Résumé global
     if st.session_state.step == "summary_input":
