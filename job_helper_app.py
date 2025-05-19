@@ -35,7 +35,7 @@ def run_job_helper_app():
     else:
         st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
 
-    if st.button("🔄 Recommencer", key="restart_app", key="restart_app"):
+    if st.button("🔄 Recommencer", key="restart_app"):
         st.session_state.clear()
         st.rerun()
         
