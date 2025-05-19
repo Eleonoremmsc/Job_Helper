@@ -4,7 +4,7 @@ from auth_config import load_auth_config
 import yaml
 from yaml.loader import SafeLoader
 import bcrypt
-from utils import load_user_data, save_user_data
+from utils.helpers import load_user_data, save_user_data
 from create_account import create_account
 from utils.gspread_client import get_gspread_client
 from job_helper_app import run_job_helper_app
