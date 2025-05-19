@@ -54,10 +54,13 @@ def run_job_helper_app():
 
     # Step 1: Choice of input mode
     # Choix pour le user: insérer un texte qui le décrit en total, ou répondre à chaque bloc pour être guidé
+    if "edit_mode" not in st.session_state:
+        st.session_state.edit_mode = False
+    
     if st.session_state.step == "input_mode":
         user_data = st.session_state.get("user_data", {})
 
-        if user_data and not st.session_state.get("edit_mode", False):
+        if user_data and not st.session_state.edit_mode:
             with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
                 st.markdown(f"""
                 **Nom :** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
@@ -71,7 +74,7 @@ def run_job_helper_app():
                     st.session_state.edit_mode = True  # Activate edit mode
                     st.rerun()
 
-        elif st.session_state.get("edit_mode", False):
+        elif st.session_state.edit_mode:
             st.subheader("✏️ Modifier mes informations sauvegardées")
             editable_block = st.text_area("Modifiez vos informations textuelles :",
                 value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
@@ -114,12 +117,12 @@ def run_job_helper_app():
                                 st.session_state.user_data["skills"] = value
                             elif "expérience" in key:
                                 st.session_state.user_data["experience"] = value
-                
+
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
                     all_data = load_user_data()
                     all_data[st.session_state.username] = st.session_state.user_data
                     save_user_data(all_data)
-                
+
                     st.success("✅ Informations mises à jour.")
                     st.session_state.edit_mode = False
                     st.session_state.step = "input_mode"
@@ -131,7 +134,7 @@ def run_job_helper_app():
                     st.session_state.edit_mode = False
                     st.rerun()
 
-        else:
+        elif not user_data:
             # No data yet, so we ask how they want to input it
             mode = st.radio(
                 "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
