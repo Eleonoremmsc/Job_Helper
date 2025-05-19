@@ -21,8 +21,12 @@ with open('config.yaml') as file:
 # Initialize session state
 if "login_success" not in st.session_state:
     st.session_state.login_success = False
+    if st.button("Créer un compte"):
+        st.session_state.step = "create_account"
 
 if not st.session_state.login_success:
+    if st.button("Créer un compte"):
+        st.session_state.step = "create_account"
     st.title("🔐 Connexion")
     username = st.text_input("Nom d'utilisateur")
     password = st.text_input("Mot de passe", type="password")

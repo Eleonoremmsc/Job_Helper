@@ -3,7 +3,7 @@ from openai import OpenAI
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from utils.helpers import load_user_data, save_user_data
+from utils.helpers import load_user_data, save_user_data, sync_to_sheet
 from datetime import datetime
 from PIL import Image
 
@@ -121,6 +121,7 @@ def run_job_helper_app():
                     all_data = load_user_data()
                     all_data[st.session_state.username] = st.session_state.user_data
                     save_user_data(all_data)
+                    sync_to_sheet(st.session_state.user_data)
 
                     st.success("✅ Informations mises à jour.")
                     st.session_state.edit_mode = False
