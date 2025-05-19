@@ -59,7 +59,8 @@ def run_job_helper_app():
     
     if st.session_state.step == "input_mode":
         user_data = st.session_state.get("user_data", {})
-
+    
+        # CASE 1 — User has data and is NOT editing
         if user_data and not st.session_state.edit_mode:
             with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
                 st.markdown(f"""
@@ -71,24 +72,22 @@ def run_job_helper_app():
                 **Description :** {user_data.get("description", "")[:100]}...
                 """)
                 if st.button("✏️ Modifier mes informations", key="edit_btn"):
-                    st.session_state.edit_mode = True  # Activate edit mode
+                    st.session_state.edit_mode = True
                     st.rerun()
-
+    
+        # CASE 2 — User is editing
         elif st.session_state.edit_mode:
             st.subheader("✏️ Modifier mes informations sauvegardées")
-            editable_block = st.text_area("Modifiez vos informations textuelles :",
-                value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
-                          Téléphone: {user_data.get("phone", "")}
-                          Email: {user_data.get("email", "")}
-                          Âge: {user_data.get("age", "")}
-                          Ville: {user_data.get("location", "")}
-                          Description: {user_data.get("description", "")}
-                          Éducation: {user_data.get("education", "")}
-                          Compétences: {user_data.get("skills", "")}
-                          Expérience: {user_data.get("experience", "")}""",
-                                      height=300
-                                  )
-                          
+            editable_block = st.text_area("Modifiez vos informations textuelles :", value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+    Téléphone: {user_data.get("phone", "")}
+    Email: {user_data.get("email", "")}
+    Âge: {user_data.get("age", "")}
+    Ville: {user_data.get("location", "")}
+    Description: {user_data.get("description", "")}
+    Éducation: {user_data.get("education", "")}
+    Compétences: {user_data.get("skills", "")}
+    Expérience: {user_data.get("experience", "")}""", height=300)
+    
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("💾 Enregistrer", key="save_edits"):
@@ -117,34 +116,33 @@ def run_job_helper_app():
                                 st.session_state.user_data["skills"] = value
                             elif "expérience" in key:
                                 st.session_state.user_data["experience"] = value
-
+    
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
                     all_data = load_user_data()
                     all_data[st.session_state.username] = st.session_state.user_data
                     save_user_data(all_data)
-
+    
                     st.success("✅ Informations mises à jour.")
                     st.session_state.edit_mode = False
-                    st.session_state.step = "input_mode"
                     st.rerun()
-
-
+    
             with col2:
                 if st.button("❌ Annuler", key="cancel_edits"):
                     st.session_state.edit_mode = False
                     st.rerun()
-
+    
+        # CASE 3 — No data yet: Ask input method
         elif not user_data:
-            # No data yet, so we ask how they want to input it
             mode = st.radio(
                 "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
-                ["Résumé global", "Questions une par une"], key="input_mode_radio"
+                ["Résumé global", "Questions une par une"],
+                key="input_mode_radio"
             )
             st.session_state.input_mode = mode
             if st.button("Continuer", key="continue_mode_choice"):
                 st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
-
-    # Step 2A: Il soumets un Résumé global
+    
+        # Step 2A: Il soumets un Résumé global
     if st.session_state.step == "summary_input":
         default_summary = ("Je suis motivée, ponctuelle et organisée. J’ai obtenu un CAP Cuisine "
                            "et j’ai travaillé deux ans comme serveuse dans un restaurant local. "
