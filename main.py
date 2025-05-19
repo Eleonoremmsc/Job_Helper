@@ -7,6 +7,8 @@ import bcrypt
 from utils import load_user_data, save_user_data
 from create_account import create_account
 from utils.gspread_client import get_gspread_client
+from job_helper_app import run_job_helper_app
+
 
 client = get_gspread_client()
 sheet = client.open("Job_Assistant_Users").worksheet("Users") 
@@ -54,7 +56,6 @@ else:
         st.stop()
 
     if menu_option == "📄 Mon CV":
-        from job_helper_app import run_job_helper_app
         run_job_helper_app()
 
     elif menu_option == "📂 Mes candidatures":
@@ -64,8 +65,3 @@ else:
     elif menu_option == "🎤 Préparation aux entretiens":
         st.subheader("🎤 Préparation aux entretiens")
         st.write("Fonctionnalité en cours de développement : exemples de questions, enregistrement vocal, et retours personnalisés.")
-
-
-    # Run app
-    from job_helper_app import run_job_helper_app
-    run_job_helper_app()
