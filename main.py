@@ -36,11 +36,10 @@ if not st.session_state.login_success:
     with col1:
         if st.button("Se connecter"):
             sheet_records = sheet.get_all_records()
-        user_info = next((row for row in sheet_records if row["Email"] == email), None)
+            user_info = next((row for row in sheet_records if row["Email"] == email), None)
 
         if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
             st.session_state.login_success = True
-            st.session_state.username = username
             st.session_state.name = user_info["Name"]
             st.session_state.user_data = {}
             st.rerun()
