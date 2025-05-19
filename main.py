@@ -62,7 +62,6 @@ else:
     menu_option = st.sidebar.radio("Menu", ["📄 Mon CV", "📂 Mes candidatures", "🎤 Préparation aux entretiens"])
 
     if menu_option == "📄 Mon CV":
-        from job_helper_app import run_job_helper_app
         run_job_helper_app()
 
     elif menu_option == "📂 Mes candidatures":

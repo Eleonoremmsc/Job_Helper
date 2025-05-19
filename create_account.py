@@ -28,14 +28,17 @@ def hash_password(password):
 # Create account function
 def create_account():
     st.title("Créer un compte")
-    st.title("J'ai déjà un compte")
+    
+    if st.button("🔐 J'ai déjà un compte"):
+        st.session_state.step = "login"
+        st.rerun()
     
     uid = generate_user_id()
     name = st.text_input("Prénom")
     email = st.text_input("Email")
     password = st.text_input("Mot de passe", type="password")
     confirm = st.text_input("Confirmez le mot de passe", type="password")
-    
+        
     if st.button("Créer mon compte"):
         if not (name and email and password and confirm):
             st.warning("Veuillez remplir tous les champs.")
