@@ -28,6 +28,7 @@ def hash_password(password):
 # Create account function
 def create_account():
     st.title("Créer un compte")
+    st.title("J'ai déjà un compte")
     
     uid = generate_user_id()
     name = st.text_input("Prénom")
