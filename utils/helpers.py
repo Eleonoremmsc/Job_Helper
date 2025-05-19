@@ -25,6 +25,7 @@ def sync_to_sheet(user_data):
         return 
 
     sheet.append_row([
+        user_data["id"],
         user_data.get("first_name", ""),
         user_data.get("last_name", ""),
         user_data.get("email", ""),
