@@ -33,7 +33,7 @@ def run_job_helper_app():
         if "last_updated" in user_data:
             st.caption(f"Dernière mise à jour : {user_data['last_updated'][:16].replace('T', ' à ')}")
     else:
-        st.info("🔄 Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
+        st.info("Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
 
     if st.button("🔄 Recommencer", key="restart_app"):
         st.session_state.clear()
@@ -118,9 +118,12 @@ def run_job_helper_app():
                                 st.session_state.user_data["experience"] = value
 
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
-                    all_data = load_user_data()
-                    all_data[st.session_state.username] = st.session_state.user_data
-                    save_user_data(all_data)
+                    user_email = st.session_state.user_data.get("email")
+                    if user_email:
+                        all_data = load_user_data()
+                        all_data[user_email] = st.session_state.user_data
+                        save_user_data(all_data)
+
                     sync_to_sheet(st.session_state.user_data)
 
                     st.success("✅ Informations mises à jour.")

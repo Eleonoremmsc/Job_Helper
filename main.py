@@ -29,14 +29,14 @@ if st.session_state.get("step") == "create_account":
     
 if not st.session_state.login_success:
     st.title("🔐 Connexion")
-    email = st.text_input("Email")
+    email = st.text_input("Email").strip()
     password = st.text_input("Mot de passe", type="password")
 
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Se connecter"):
             sheet_records = sheet.get_all_records()
-            user_info = next((row for row in sheet_records if row["Email"] == email), None)
+            user_info = next((row for row in sheet_records if row["Email"].lower().strip() == email.lower().strip()), None)
 
             if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
                 st.session_state.login_success = True
