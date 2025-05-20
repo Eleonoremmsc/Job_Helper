@@ -1,14 +1,12 @@
 import streamlit as st
-import streamlit_authenticator as stauth
-from auth_config import load_auth_config
+import bcrypt
 import yaml
 from yaml.loader import SafeLoader
-import bcrypt
-from utils.helpers import load_user_data, save_user_data
 from create_account import create_account
 from utils.gspread_client import get_gspread_client
 from job_helper_app import run_job_helper_app
 from create_account import create_account
+from motivation_letter import run_applications_page
 
 
 client = get_gspread_client()
@@ -66,6 +64,7 @@ else:
 
     elif menu_option == "📂 Mes candidatures":
         st.subheader("📂 Mes candidatures")
+        run_applications_page()
         st.write("À venir : un espace pour voir, modifier et suivre vos candidatures envoyées.")
 
     elif menu_option == "🎤 Préparation aux entretiens":

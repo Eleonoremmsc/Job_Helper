@@ -32,6 +32,8 @@ def sync_to_sheet(user_data):
         user_data.get("phone", ""),
         user_data.get("age", ""),
         user_data.get("location", ""),
-        datetime.now().isoformat()
+        datetime.now().isoformat(),
+        "\n".join(user_data.get("accepted_suggestions", []))
+
     ])
 
