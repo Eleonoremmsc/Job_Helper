@@ -188,9 +188,14 @@ def run_job_helper_app():
 
             }
             # Save to persistent storage
-            all_data = load_user_data()
-            all_data[st.session_state.email] = st.session_state.user_data
-            save_user_data(all_data)
+            email = st.session_state.get("email")
+            if email:
+                all_data = load_user_data()
+                all_data[email] = st.session_state.user_data
+                save_user_data(all_data)
+            else:
+                st.warning("Erreur : adresse email non trouvée en session.")
+
 
             st.session_state.step = "recommend"
 
