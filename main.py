@@ -12,11 +12,6 @@ from motivation_letter import run_applications_page
 client = get_gspread_client()
 sheet = client.open("Job_Assistant_Users").worksheet("Users") 
 
-
-# Load credentials
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
-
 # Initialize session state
 if "login_success" not in st.session_state:
     st.session_state.login_success = False

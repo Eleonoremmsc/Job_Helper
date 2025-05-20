@@ -56,6 +56,11 @@ def generate_letter(user_data, offer_link, extra_info):
 
 # Main Application Page
 def run_applications_page():
+    user_data = st.session_state.get("user_data", {})
+    if not user_data:
+        st.warning("Aucun profil trouvé. Veuillez d'abord remplir votre CV dans la section '📄 Mon CV'.")
+        st.stop()
+    
     st.title("📂 Mes candidatures")
     user_data = st.session_state.get("user_data", {})
     username = st.session_state.get("email")

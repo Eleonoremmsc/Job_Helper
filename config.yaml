@@ -1,8 +1,0 @@
-credentials:
-  usernames:
-    alice:
-      name: Alice
-      password: $2b$12$9fTU/T1nD8nZ/bvttkoVnu6BcNsICMwIlCTOD2kbNkqxScbRgNljO  # use hashed passwords for real apps
-    bob:
-      name: Bob
-      password: $2b$12$9fTU/T1nD8nZ/bvttkoVnu6BcNsICMwIlCTOD2kbNkqxScbRgNljO

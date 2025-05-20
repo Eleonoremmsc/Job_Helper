@@ -1,39 +1,59 @@
-import json
-import os
 import datetime
-from utils.gspread_client import get_gspread_client
+from datetime import datetime
+from create_account import get_worksheet
+import uuid
 
-DATA_FILE = "user_data.json"
+def save_user_to_sheet(user_data):
+    sheet = get_worksheet()
+    email = user_data.get("email", "").strip()
+    
+    all_rows = sheet.get_all_records()
+    for i, row in enumerate(all_rows, start=2):
+        if row["Email"] == email:
+            sheet.update(f"B{i}:N{i}", [[
+                user_data.get("first_name", ""),
+                user_data.get("last_name", ""),
+                email,
+                row.get("Hashed_Password"),
+                user_data.get("phone", ""),
+                user_data.get("age", ""),
+                user_data.get("location", ""),
+                user_data.get("description", ""),
+                user_data.get("education", ""),
+                user_data.get("skills", ""),
+                user_data.get("experience", ""),
+                "\n".join(user_data.get("accepted_suggestions", [])),
+                user_data.get("last_updated", datetime.now().isoformat()),
+            ]])
 
-def load_user_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r") as f:
-            return json.load(f)
-    return {}
+def load_user_from_sheet(email):
+    sheet = get_worksheet()
+    rows = sheet.get_all_records()
+    return next((row for row in rows if row["Email"] == email), {})
 
-def save_user_data(all_data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(all_data, f, indent=2)
-        
 def sync_to_sheet(user_data):
-    client = get_gspread_client()
-    sheet = client.open("Job_Assistant_Users").worksheet("Users")
-    
-    existing_ids = sheet.col_values(1)
-    
-    if user_data["id"] in existing_ids:
-        return 
+    sheet = get_worksheet()  # Already authenticated
+    emails = [row[3] for row in sheet.get_all_values()[1:]]  # 4th col = Email
+
+    # Avoid duplicates
+    if user_data.get("email") in emails:
+        return  # Already exists
 
     sheet.append_row([
-        user_data["id"],
+        user_data.get("id", str(uuid.uuid4())),
         user_data.get("first_name", ""),
         user_data.get("last_name", ""),
         user_data.get("email", ""),
+        user_data.get("hashed_password", ""),
         user_data.get("phone", ""),
         user_data.get("age", ""),
         user_data.get("location", ""),
-        datetime.now().isoformat(),
-        "\n".join(user_data.get("accepted_suggestions", []))
-
+        user_data.get("description", ""),
+        user_data.get("education", ""),
+        user_data.get("skills", ""),
+        user_data.get("experience", ""),
+        "\n".join(user_data.get("accepted_suggestions", [])),
+        user_data.get("last_updated", datetime.now().isoformat()),
+        user_data.get("created_at", datetime.now().isoformat())
     ])
-
+    

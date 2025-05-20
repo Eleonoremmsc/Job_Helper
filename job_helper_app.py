@@ -3,7 +3,7 @@ from openai import OpenAI
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from utils.helpers import load_user_data, save_user_data, sync_to_sheet
+from utils.helpers import load_user_from_sheet, save_user_to_sheet, sync_to_sheet
 from datetime import datetime
 from PIL import Image
 
@@ -120,11 +120,8 @@ def run_job_helper_app():
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
                     user_email = st.session_state.user_data.get("email")
                     if user_email:
-                        all_data = load_user_data()
-                        all_data[user_email] = st.session_state.user_data
-                        save_user_data(all_data)
-
-                    sync_to_sheet(st.session_state.user_data)
+                        save_user_to_sheet(st.session_state.user_data)
+                        sync_to_sheet(st.session_state.user_data)
 
                     st.success("✅ Informations mises à jour.")
                     st.session_state.edit_mode = False
@@ -190,9 +187,9 @@ def run_job_helper_app():
             # Save to persistent storage
             email = st.session_state.get("email")
             if email:
-                all_data = load_user_data()
-                all_data[email] = st.session_state.user_data
-                save_user_data(all_data)
+                save_user_to_sheet(st.session_state.user_data)
+                sync_to_sheet(st.session_state.user_data)
+
             else:
                 st.warning("Erreur : adresse email non trouvée en session.")
 
@@ -295,7 +292,7 @@ def run_job_helper_app():
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
         user = st.session_state.user_data
-        all_data = load_user_data()
+        all_data = load_user_from_sheet()
         email = st.session_state.user_data.get("email")
         saved_user = all_data.get(email, {})
         accepted_suggestions = saved_user.get("accepted_suggestions", [])
