@@ -189,7 +189,7 @@ def run_job_helper_app():
             }
             # Save to persistent storage
             all_data = load_user_data()
-            all_data[st.session_state.username] = st.session_state.user_data
+            all_data[st.session_state.email] = st.session_state.user_data
             save_user_data(all_data)
 
             st.session_state.step = "recommend"
@@ -291,7 +291,8 @@ def run_job_helper_app():
     if st.session_state.step == "generate":
         user = st.session_state.user_data
         all_data = load_user_data()
-        saved_user = all_data.get(st.session_state.username, {})
+        email = st.session_state.user_data.get("email")
+        saved_user = all_data.get(email, {})
         accepted_suggestions = saved_user.get("accepted_suggestions", [])
         
         st.subheader("📝 Résultat final")
