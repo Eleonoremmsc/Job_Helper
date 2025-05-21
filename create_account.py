@@ -8,6 +8,8 @@ import json
 
 if "lang" not in st.session_state:
     st.session_state.lang = "fr"
+lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="Create_Account_Lang")
+
     
 def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -27,7 +29,6 @@ def hash_password(password):
 # Create account function
 def create_account():
 
-    lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="Create_Account_Lang")
     st.session_state.lang = lang
     
     st.title("Créer un compte" if lang == "fr" else "Create an account")
