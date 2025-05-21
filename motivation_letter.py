@@ -78,11 +78,12 @@ def run_applications_page():
         st.subheader("Nouvelle candidature")
         
         offer_link = st.text_input("🔗 Lien de l'offre")
+        extra_info = st.text_area("Informations complémentaires (facultatif)")
         job_title = st.text_input("Nom du poste")
         company = st.text_input("Nom de l'entreprise")
         selected_date = st.date_input("Date", value=date.today())
         formatted_date = selected_date.strftime("%d/%m/%Y")
-        extra_info = st.text_area("Informations complémentaires (facultatif)")
+        
         
         if st.button("✍️ Générer ma lettre de motivation"):
             if not offer_link:
@@ -90,7 +91,7 @@ def run_applications_page():
             else:
                 with st.spinner("Rédaction en cours..."):
                     job_data = extract_job_info_from_link(offer_link)
-                    gpt_result = get_gpt_letter_and_score(user_data, offer_link, extra_info, job_title, company)
+                    gpt_result = get_gpt_letter_and_score(user_data, offer_link, extra_info, job_title, company, formatted_date)
                     st.session_state.generated_letter = gpt_result["letter"]
                     st.session_state.match_score = gpt_result["match_score"]
                     st.session_state.suggestions = gpt_result.get("suggestions", [])

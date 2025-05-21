@@ -22,7 +22,7 @@ def extract_job_info_from_link(link):
         print(f"Error extracting info from link: {e}")
         return ""
 
-def get_gpt_letter_and_score(user_data, job_link, additional_info, job_title, company):
+def get_gpt_letter_and_score(user_data, job_link, additional_info, job_title, company, selected_date):
     """
     Calls GPT to generate a motivation letter, match score, and suggestions.
     """
@@ -41,6 +41,9 @@ Ta tâche :
 3. Fournis une **lettre de motivation personnalisée** adaptée à l'offre et au profil.
 4. Fournis un **score de compatibilité (0-100%)**.
 5. Si le score < 50%, suggère **2 autres postes/domaines** mieux adaptés.
+
+Dates d'envoi : 
+{selected_date}
 
 Infos candidat :
 {user_data}
