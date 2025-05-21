@@ -85,9 +85,17 @@ XX
     suggestions = []
     if score_value < 50:
         suggestions = [line.strip("- ") for line in suggestions_section.split("\n") if line.strip()]
+    
+    # Split at the marker
+    split_marker = "### Lettre de Motivation"
+    if split_marker in letter:
+        _, letter_content = letter.split(split_marker, 1)
+        letter_content = letter_content.strip()
+    else:
+        letter_content = letter  # fallback if marker not found
 
     return {
-        "letter": letter,
+        "letter": letter_content,
         "match_score": score,
         "suggestions": suggestions
     }
