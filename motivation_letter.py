@@ -106,9 +106,10 @@ def run_applications_page():
     st.subheader("📁 Mes lettres de motivation sauvegardées")
     if user_apps:
         for i, app in enumerate(user_apps[::-1]):
-            with st.expander(f"📄 Candidature du {app['date'][:10]}"):
+            with st.expander(f"📄 Candidature pour {app['job_title']} - {app['company']} du {app['date'][:10]}"):
                 st.markdown(f"**Lien de l'offre :** [{app['offer_link']}]({app['offer_link']})")
-                st.markdown(f"**Informations complémentaires :** {app['extra_info'] or 'Aucune'}")
+                if app['extra_info']:
+                    st.markdown(f"**Informations complémentaires :** {app['extra_info']}")
                 st.markdown("---")
                 st.text_area("Lettre de motivation :", value=app['letter'], height=300, key=f"letter_{i}")
 
