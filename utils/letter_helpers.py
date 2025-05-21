@@ -1,4 +1,6 @@
 import requests
+import uuid
+import datetime
 from bs4 import BeautifulSoup
 import openai
 import streamlit as st
@@ -105,18 +107,19 @@ XX
 
 SPREADSHEET_NAME = "Job_Assistant_Users"
 SHEET_NAME = "Users"
-    
-def save_application_for_user(email, job_title, company, date, letter, score):
-    """
-    Save this application for the user using local storage or Google Sheets (adapt as needed).
-    """
+
+# Save user applications to disk
+def save_application_for_user(email, job_title, company, date, letter, score, offer_link="", extra_info=""):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     sheet.append_row([
+        str(uuid.uuid4()),
         email,
         job_title,
         company,
         date,
         letter,
-        score
+        score,
+        offer_link,
+        extra_info,
+        datetime.now().isoformat()
     ])
-    

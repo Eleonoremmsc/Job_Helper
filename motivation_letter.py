@@ -20,21 +20,6 @@ def load_applications_from_sheet(email):
     rows = sheet.get_all_records()
     return [row for row in rows if row["Email"] == email]
 
-# Save user applications to disk
-def save_application_for_user(email, job_title, company, date, letter, score, offer_link="", extra_info=""):
-    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
-    sheet.append_row([
-        str(uuid.uuid4()),
-        email,
-        job_title,
-        company,
-        date,
-        letter,
-        score,
-        offer_link,
-        extra_info,
-        datetime.now().isoformat()
-    ])
 
 # Main Application Page
 def run_applications_page():
