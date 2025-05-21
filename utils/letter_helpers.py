@@ -1,6 +1,6 @@
 import requests
 import uuid
-import datetime
+from datetime import datetime
 from bs4 import BeautifulSoup
 import openai
 import streamlit as st
