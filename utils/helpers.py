@@ -6,24 +6,24 @@ import uuid
 def save_user_to_sheet(user_data):
     sheet = get_worksheet()
     email = user_data.get("email", "").strip()
-    
     all_rows = sheet.get_all_records()
+    
     for i, row in enumerate(all_rows, start=2):
         if row["Email"] == email:
             sheet.update(f"B{i}:N{i}", [[
-                user_data.get("first_name", ""),
-                user_data.get("last_name", ""),
-                email,
+                row.get("First_Name", ""),
+                row.get("Last_Name", ""),
+                row.get("Email", ""),
                 row.get("Hashed_Password"),
-                user_data.get("phone", ""),
-                user_data.get("age", ""),
-                user_data.get("location", ""),
-                user_data.get("description", ""),
-                user_data.get("education", ""),
-                user_data.get("skills", ""),
-                user_data.get("experience", ""),
-                "\n".join(user_data.get("accepted_suggestions", [])),
-                user_data.get("last_updated", datetime.now().isoformat()),
+                row.get("phone", ""),
+                row.get("age", ""),
+                row.get("location", ""),
+                row.get("description", ""),
+                row.get("education", ""),
+                row.get("skills", ""),
+                row.get("experience", ""),
+                "\n".join(row.get("accepted_suggestions", [])),
+                row.get("last_updated", datetime.now().isoformat()),
             ]])
 
 def load_user_from_sheet(email):
