@@ -33,7 +33,6 @@ if not st.session_state.login_success:
 
             if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
                 st.session_state.login_success = True
-                st.session_state.name = user_info["Name"]
                 st.session_state.email = user_info["Email"]
                 st.session_state.user_data = load_user_from_sheet(email)
                 st.rerun()
