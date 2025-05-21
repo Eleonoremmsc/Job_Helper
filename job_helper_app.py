@@ -201,7 +201,6 @@ def run_job_helper_app():
 
         # CASE 2 — User is editing
         elif st.session_state.edit_mode:
-            st.subheader(T["save"][lang])
             if lang=="en":
                 editable_block = st.text_area("Modify your written information :", 
                                           value=
@@ -276,6 +275,9 @@ def run_job_helper_app():
                 if st.button(T["cancel"][lang]):
                     st.session_state.edit_mode = False
                     st.rerun()
+        if st.button(T["analyse_me"][lang]):
+            st.session_state.user_data = {"summary": summary.strip()}
+            st.session_state.step = "recommend"
 
         # CASE 3 — No data yet: Ask input method
         elif not user_data:
