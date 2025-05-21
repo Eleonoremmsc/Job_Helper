@@ -2,24 +2,37 @@ import streamlit as st
 from openai import OpenAI
 import json
 import os
+import uuid
+import datetime
 from datetime import date
 from utils.letter_helpers import extract_job_info_from_link, get_gpt_letter_and_score, save_application_for_user
+from create_account import get_worksheet
 
 # Constants
-APPLICATIONS_FILE = "user_applications.json"
 client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
 # Load user applications from disk
-def load_applications():
-    if os.path.exists(APPLICATIONS_FILE):
-        with open(APPLICATIONS_FILE, "r") as f:
-            return json.load(f)
-    return {}
+def load_applications_from_sheet(email):
+    sheet = get_worksheet("Job_Assistant_Applications", "Applications")
+    rows = sheet.get_all_records()
+    return [row for row in rows if row["Email"] == email]
 
 # Save user applications to disk
-def save_applications(data):
-    with open(APPLICATIONS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+def save_application_for_user(email, job_title, company, date, letter, score, offer_link="", extra_info=""):
+    sheet = get_worksheet("Job_Assistant_Applications", "Applications")
+    sheet.append_row([
+        str(uuid.uuid4()),
+        email,
+        job_title,
+        company,
+        date,
+        letter,
+        score,
+        offer_link,
+        extra_info,
+        datetime.now().isoformat()
+    ])
+
 
 # Generate letter of motivation using GPT
 def generate_letter(user_data, offer_link, extra_info):
@@ -70,8 +83,7 @@ def run_applications_page():
         st.warning("Vous devez être connecté pour accéder à cette page.")
         return
 
-    all_apps = load_applications()
-    user_apps = all_apps.get(username, [])
+    user_apps = load_applications_from_sheet()
 
     # Sidebar to add new application
     with st.expander("➕ Créer une nouvelle candidature"):
