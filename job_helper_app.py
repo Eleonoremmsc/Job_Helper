@@ -185,7 +185,7 @@ def run_job_helper_app():
 
             }
             # Save to persistent storage
-            email = st.session_state.get("email")
+            email = st.session_state.user_data.get("email")
             if email:
                 save_user_to_sheet(st.session_state.user_data)
                 sync_to_sheet(st.session_state.user_data)
@@ -284,18 +284,19 @@ def run_job_helper_app():
                             st.session_state[f"modifying_{i}"] = False
                             st.rerun()
 
-
         if all(r is None for r in st.session_state.recommendations):
+            st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
+            sync_to_sheet(st.session_state.user_data)
+            
             if st.button("➡️ Continuer vers la génération du PDF"):
                 st.session_state.step = "generate"
 
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
         user = st.session_state.user_data
-        all_data = load_user_from_sheet()
         email = st.session_state.user_data.get("email")
-        saved_user = all_data.get(email, {})
-        accepted_suggestions = saved_user.get("accepted_suggestions", [])
+        saved_user = load_user_from_sheet(email)
+        #accepted_suggestions = saved_user.get("accepted_suggestions", [])
         
         st.subheader("📝 Résultat final")
 
