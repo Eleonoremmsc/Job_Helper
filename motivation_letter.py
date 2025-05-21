@@ -1,8 +1,8 @@
 import streamlit as st
 from openai import OpenAI
-from datetime import datetime
 import json
 import os
+from datetime import date
 from utils.letter_helpers import extract_job_info_from_link, get_gpt_letter_and_score, save_application_for_user
 
 # Constants
