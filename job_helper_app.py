@@ -278,20 +278,20 @@ def run_job_helper_app():
 
         # CASE 3 — Ask input method
         if st.session_state.step == "input_mode" and not st.session_state.edit_mode and not st.session_state.user_data.get("summary") and not st.session_state.user_data.get("first_name"):
-        prompt = {
-            "fr": "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
-            "en": "Would you like to enter a summary or fill in your information step by step?"
-        }
-        mode_options = {
-            "fr": ["Résumé global", "Questions une par une"],
-            "en": ["Résumé global", "Questions une par une"]  # You can translate if you prefer
-        }
-
-        mode = st.radio(prompt[lang], mode_options[lang], key="input_mode_radio")
-        st.session_state.input_mode = mode
-
-        if st.button(T["continue"][lang]):
-            st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
+            prompt = {
+                "fr": "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
+                "en": "Would you like to enter a summary or fill in your information step by step?"
+            }
+            mode_options = {
+                "fr": ["Résumé global", "Questions une par une"],
+                "en": ["Résumé global", "Questions une par une"]  # You can translate if you prefer
+            }
+    
+            mode = st.radio(prompt[lang], mode_options[lang], key="input_mode_radio")
+            st.session_state.input_mode = mode
+    
+            if st.button(T["continue"][lang]):
+                st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
 
 
         # Step 2A: Il soumets un Résumé global
