@@ -102,12 +102,15 @@ XX
         "match_score": score,
         "suggestions": suggestions
     }
+
+SPREADSHEET_NAME = "Job_Assistant_Users"
+SHEET_NAME = "Applications"
     
 def save_application_for_user(email, job_title, company, date, letter, score):
     """
     Save this application for the user using local storage or Google Sheets (adapt as needed).
     """
-    sheet = get_worksheet("Applications")
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     sheet.append_row([
         email,
         job_title,

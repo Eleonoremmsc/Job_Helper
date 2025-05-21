@@ -3,8 +3,11 @@ from datetime import datetime
 from create_account import get_worksheet
 import uuid
 
+SPREADSHEET_NAME = "Job_Assistant_Users"
+SHEET_NAME = "Users"
+
 def save_user_to_sheet(user_data):
-    sheet = get_worksheet()
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     email = user_data.get("email", "").strip()
     all_rows = sheet.get_all_records()
     
@@ -27,12 +30,12 @@ def save_user_to_sheet(user_data):
             ]])
 
 def load_user_from_sheet(email):
-    sheet = get_worksheet()
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     rows = sheet.get_all_records()
     return next((row for row in rows if row["Email"] == email), {})
 
 def sync_to_sheet(user_data):
-    sheet = get_worksheet()  # Already authenticated
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     emails = [row[3] for row in sheet.get_all_values()[1:]]  # 4th col = Email
 
     # Avoid duplicates

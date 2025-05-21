@@ -7,10 +7,8 @@ import uuid
 import json
 
 # Constants
-SPREADSHEET_NAME = "Job_Assistant_Users"
-SHEET_NAME = "Users"
 
-def get_worksheet():
+def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
         st.secrets["gcp_service_account"], scope
@@ -47,8 +45,9 @@ def create_account():
         if password != confirm:
             st.error("Les mots de passe ne correspondent pas.")
             return
-
-        sheet = get_worksheet()
+        SPREADSHEET_NAME = "Job_Assistant_Users"
+        SHEET_NAME = "Users"
+        sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
         existing_emails = sheet.col_values(4) 
 
         if email in existing_emails:
