@@ -86,8 +86,12 @@ XX
     if score_value < 50:
         suggestions = [line.strip("- ") for line in suggestions_section.split("\n") if line.strip()]
 
-    return letter, score_value, suggestions
-
+    return {
+        "letter": letter,
+        "match_score": score,
+        "suggestions": suggestions
+    }
+    
 def save_application_for_user(email, application_data):
     """
     Save this application for the user using local storage or Google Sheets (adapt as needed).
