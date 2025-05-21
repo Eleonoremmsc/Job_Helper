@@ -10,5 +10,4 @@ gspread
 oauth2client
 uuid
 bs4
-base64
 xhtml2pdf

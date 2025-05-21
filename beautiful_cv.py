@@ -1,4 +1,3 @@
-from utils.helpers import load_user_from_sheet
 from openai import OpenAI
 import streamlit as st
 
