@@ -11,6 +11,94 @@ from xhtml2pdf import pisa
 import base64
 
 
+T = {
+    "title": {
+        "fr": "Aide à la candidature",
+        "en": "Job Application Assistant"
+    },
+    "no_profile": {
+        "fr": "Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.",
+        "en": "No saved profile found. Please fill in your information first."
+    },
+    "loaded": {
+        "fr": "✅ Profil chargé automatiquement à partir de vos informations enregistrées.",
+        "en": "✅ Profile automatically loaded from saved data."
+    },
+    "last_update": {
+        "fr": "Dernière mise à jour ",
+        "en": "Last updated"
+    },
+    "restart": {
+        "fr": "🔄 Recommencer",
+        "en": "🔄 Restart"
+    },
+    "continue": {
+        "fr": "➡️ Continuer vers la génération du PDF",
+        "en": "➡️ Continue to PDF generation"
+    },
+    "download_cv": {
+        "fr": "📥 Télécharger mon CV (.pdf)",
+        "en": "📥 Download my CV (.pdf)"
+    },
+    "saved_profile": {
+        "fr": "👀 Aperçu de votre profil sauvegardé",
+        "en": "👀 Your saved profile",
+    },
+    "modify": {
+        "fr": "✏️ Modifier mes informations",
+        "en": "✏️ Modify my saved information"
+    },
+    "save": {
+        "fr": "💾 Enregistrer",
+        "en": "💾 Save"      
+    },
+    "cancel": {
+        "fr": "❌ Annuler",
+        "en": "❌ Cancel"
+    },
+    "info_updated": {
+        "fr": "✅ Informations mises à jour.",
+        "en": "✅ You Information has been updated."
+    },
+    "error_warning": {
+        "fr": "Erreur : adresse email non trouvée en session.",
+        "en": "Error: email address not found."
+    },
+    "profile_analysis": {
+        "fr": "Analyse de votre profil pour suggestions...",
+        "en": "Analyzing profile for suggestions..."
+    },
+    "accept": {
+        "fr": "✅ Accepter",
+        "en": "✅ Accept"
+    },
+    "modify": {
+        "fr": "✏️ Modifier",
+        "en": "✏️ Modify"
+    },
+    "reject": {
+        "fr": "❌ Rejeter",
+        "en": "❌ Reject"
+    },
+    "propose_modify": {
+        "fr": "Modifier la suggestion :",
+        "en": "Modify the suggestion:"
+    },
+    "generate_pdf": {
+        "fr": "➡️ Continuer vers la génération du DOCX",
+        "en": "➡️ Continue to DOCX generation"
+    },
+    "final_result": {
+        "fr": "📝 Résultat final",
+        "en": "📝 Final Result"
+    },
+    "modify_cv": {
+        "fr": "✏️ Modifiez votre CV (HTML)",
+        "en": "✏️ Modify your CV (HTML)"
+    }
+}
+
+
 def run_job_helper_app():
     lang = st.session_state.get("lang", "fr")
 
@@ -27,17 +115,17 @@ def run_job_helper_app():
     with col1:
         st.image("assets/red_cross.png", width=40)
     with col2:
-        st.title("Aide à la candidature")    
+        st.title(T["title"][lang])    
             
     user_data = st.session_state.user_data
     if user_data:
-        st.success("✅ Profil chargé automatiquement à partir de vos informations enregistrées.")
+        st.success(T["loaded"][lang])
         if "last_updated" in user_data:
-            st.caption(f"Dernière mise à jour : {user_data['last_updated'][:16].replace('T', ' à ')}")
+            st.caption(f"{T["title"][lang]}: {user_data['last_updated'][:16].replace('T', ' à ')}")
     else:
-        st.info("Aucun profil sauvegardé trouvé. Veuillez remplir vos informations.")
+        st.info(T["no_profile"][lang])
 
-    if st.button("🔄 Recommencer", key="restart_app"):
+    if st.button(T["restart"][lang]):
         st.session_state.clear()
         st.rerun()
         
@@ -64,35 +152,64 @@ def run_job_helper_app():
 
         # CASE 1 — User has data and is NOT editing
         if user_data and not st.session_state.edit_mode:
-            with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
-                st.markdown(f"""
-                **Nom :** {user_data.get("First_Name", "")} {user_data.get("Last_Name", "")}  
-                **Téléphone :** {user_data.get("phone", "")}  
+            with st.expander(T["saved_profile"][lang]):
+                if lang=="en":
+                    st.markdown(f"""
+                **Name :** {user_data.get("First_Name", "")} {user_data.get("Last_Name", "")}  
+                **Phone :** {user_data.get("phone", "")}  
                 **Email :** {user_data.get("Email", "")}  
-                **Ville :** {user_data.get("location", "")}  
-                **Âge :** {user_data.get("age", "")}  
+                **City :** {user_data.get("location", "")}  
+                **Age :** {user_data.get("age", "")}  
                 **Description :** {user_data.get("description", "")[:100]}...
                 """)
-                if st.button("✏️ Modifier mes informations", key="edit_btn"):
+                else:
+                    st.markdown(f"""
+                    **Nom :** {user_data.get("First_Name", "")} {user_data.get("Last_Name", "")}  
+                    **Téléphone :** {user_data.get("phone", "")}  
+                    **Email :** {user_data.get("Email", "")}  
+                    **Ville :** {user_data.get("location", "")}  
+                    **Âge :** {user_data.get("age", "")}  
+                    **Description :** {user_data.get("description", "")[:100]}...
+                    """)
+                if st.button(T["modify"][lang]):
                     st.session_state.edit_mode = True
                     st.rerun()
 
         # CASE 2 — User is editing
         elif st.session_state.edit_mode:
-            st.subheader("✏️ Modifier mes informations sauvegardées")
-            editable_block = st.text_area("Modifiez vos informations textuelles :", value=f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
-    Téléphone: {user_data.get("phone", "")}
-    Email: {user_data.get("email", "")}
-    Âge: {user_data.get("age", "")}
-    Ville: {user_data.get("location", "")}
-    Description: {user_data.get("description", "")}
-    Éducation: {user_data.get("education", "")}
-    Compétences: {user_data.get("skills", "")}
-    Expérience: {user_data.get("experience", "")}""", height=300)
+            st.subheader(T["save"][lang])
+            if lang=="en":
+                editable_block = st.text_area("Modify your written information :", 
+                                          value=
+                                          f"""Name: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+                                                Phone: {user_data.get("phone", "")}
+                                                Email: {user_data.get("email", "")}
+                                                Age: {user_data.get("age", "")}
+                                                City: {user_data.get("location", "")}
+                                                Description: {user_data.get("description", "")}
+                                                Education: {user_data.get("education", "")}
+                                                Skills: {user_data.get("skills", "")}
+                                                Professional Experience: {user_data.get("experience", "")}
+                                                """, 
+                                           height=300)
+            else:
+                editable_block = st.text_area("Modifiez vos informations textuelles :", 
+                                              value=
+                                              f"""Nom: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+                                                    Téléphone: {user_data.get("phone", "")}
+                                                    Email: {user_data.get("email", "")}
+                                                    Âge: {user_data.get("age", "")}
+                                                    Ville: {user_data.get("location", "")}
+                                                    Description: {user_data.get("description", "")}
+                                                    Éducation: {user_data.get("education", "")}
+                                                    Compétences: {user_data.get("skills", "")}
+                                                    Expérience: {user_data.get("experience", "")}
+                                                    """, 
+                                               height=300)
 
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("💾 Enregistrer", key="save_edits"):
+                if st.button(T["modify"][lang]):
                     for line in editable_block.strip().split("\n"):
                         if ":" in line:
                             key, value = line.split(":", 1)
@@ -102,7 +219,7 @@ def run_job_helper_app():
                                 parts = value.split()
                                 st.session_state.user_data["first_name"] = parts[0] if parts else ""
                                 st.session_state.user_data["last_name"] = " ".join(parts[1:]) if len(parts) > 1 else ""
-                            elif "téléphone" in key:
+                            elif "téléphone" or "Phone" in key:
                                 st.session_state.user_data["phone"] = value
                             elif "email" in key:
                                 st.session_state.user_data["email"] = value
@@ -125,12 +242,12 @@ def run_job_helper_app():
                         save_user_to_sheet(st.session_state.user_data)
                         sync_to_sheet(st.session_state.user_data)
 
-                    st.success("✅ Informations mises à jour.")
+                    st.success(T["info_updated"][lang])
                     st.session_state.edit_mode = False
                     st.rerun()
 
             with col2:
-                if st.button("❌ Annuler", key="cancel_edits"):
+                if st.button(T["cancel"][lang]):
                     st.session_state.edit_mode = False
                     st.rerun()
 
@@ -142,7 +259,7 @@ def run_job_helper_app():
                 key="input_mode_radio"
             )
             st.session_state.input_mode = mode
-            if st.button("Continuer", key="continue_mode_choice"):
+            if st.button(T["continue"][lang]):
                 st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
 
         # Step 2A: Il soumets un Résumé global
@@ -193,7 +310,7 @@ def run_job_helper_app():
                 sync_to_sheet(st.session_state.user_data)
 
             else:
-                st.warning("Erreur : adresse email non trouvée en session.")
+                st.warning(T["error_warning"][lang])
 
 
             st.session_state.step = "recommend"
@@ -216,7 +333,7 @@ def run_job_helper_app():
     """
 
         if not st.session_state.recommendations and not DEBUG_MODE:
-            with st.spinner("Analyse de votre profil pour suggestions..."):
+            with st.spinner(T["profile_analysis"][lang]):
                 prompt = f"""
             Tu es un assistant bienveillant qui aide à enrichir des profils pour un CV.
             Voici un profil utilisateur :
@@ -237,7 +354,8 @@ def run_job_helper_app():
             - Puis-je ajouter que vous parlez espagnol ?
             - Puis-je ajouter que vous savez utiliser Excel ?
             - Puis-je ajouter que vous avez déjà travaillé avec des enfants ?
-
+            
+            Réponds entièrement en français ou anglais selon cette clé: {lang}
             """
                 response = client.chat.completions.create(
                     model="gpt-4o",
@@ -263,23 +381,23 @@ def run_job_helper_app():
                     col1, col2, col3 = st.columns([1, 1, 2])
 
                     with col1:
-                        if st.button("✅ Accepter", key=f"accept_{i}"):
+                        if st.button(T["accept"][lang], key=f"accept_{i}"):
                             st.session_state.accepted_suggestions.append(rec)
                             st.session_state.recommendations[i] = None
                             st.rerun()
 
                     with col2:
-                        if st.button("✏️ Modifier", key=f"mod_button_{i}"):
+                        if st.button(T["modify"][lang], key=f"mod_button_{i}"):
                             st.session_state[f"modifying_{i}"] = True
 
                     with col3:
-                        if st.button("❌ Rejeter", key=f"reject_{i}"):
+                        if st.button(T["reject"][lang], key=f"reject_{i}"):
                             st.session_state.recommendations[i] = None
                             st.rerun()
 
                     if st.session_state.get(f"modifying_{i}", False):
-                        st.text_input("Modifier la suggestion :", key=f"mod_text_{i}", value=rec)
-                        if st.button("💾 Enregistrer", key=f"save_mod_{i}"):
+                        st.text_input(T["propose_modify"][lang], key=f"mod_text_{i}", value=rec)
+                        if st.button(T["save"][lang], key=f"save_mod_{i}"):
                             modified = st.session_state[f"mod_text_{i}"]
                             st.session_state.accepted_suggestions.append(modified)
                             st.session_state.recommendations[i] = None
@@ -290,7 +408,7 @@ def run_job_helper_app():
             st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
             sync_to_sheet(st.session_state.user_data)
             
-            if st.button("➡️ Continuer vers la génération du PDF"):
+            if st.button(T["generate_pdf"][lang]):
                 st.session_state.step = "generate"
 
     # Step 4: DOCX generation
@@ -300,7 +418,7 @@ def run_job_helper_app():
         saved_user = load_user_from_sheet(email)
         #accepted_suggestions = saved_user.get("accepted_suggestions", [])
         
-        st.subheader("📝 Résultat final")
+        st.subheader(T["final_result"][lang])
 
         sections = []
         if user.get("description"): sections.append(f"🧍 Description :\n{user['description']}")
@@ -340,6 +458,8 @@ def run_job_helper_app():
     Description :
     Éducation :
     ...
+    
+    Réponds entièrement en français ou anglais selon cette clé: {lang}
     """
 
 
@@ -356,14 +476,14 @@ def run_job_helper_app():
         html_cv = create_beautiful_cv(cv_content)  # This is GPT's output
         st.components.v1.html(html_cv, height=1000, scrolling=True)
 
-        edited_html = st.text_area("✏️ Modifiez votre CV (HTML)", value=html_cv, height=600)
+        edited_html = st.text_area(T["modify_cv"][lang], value=html_cv, height=600)
 
         def convert_html_to_pdf(source_html, output_filename):
             with open(output_filename, "w+b") as result_file:
                 pisa_status = pisa.CreatePDF(source_html, dest=result_file)
             return pisa_status.err
 
-        if st.button("📥 Télécharger mon CV (.pdf)"):
+        if st.button(T["download_cv"][lang]):
             filename = "mon_cv.pdf"
             error = convert_html_to_pdf(edited_html, filename)
             if not error:

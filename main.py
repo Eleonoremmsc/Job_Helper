@@ -15,7 +15,7 @@ sheet = client.open("Job_Assistant_Users").worksheet("Users")
 if "lang" not in st.session_state:
     st.session_state.lang = "fr"
 
-lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True)
+st.session_state.lang = st.sidebar.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True)
 
 # Initialize session state
 if "login_success" not in st.session_state:
