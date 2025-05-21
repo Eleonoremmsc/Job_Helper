@@ -12,10 +12,12 @@ from utils.helpers import load_user_from_sheet
 client = get_gspread_client()
 sheet = client.open("Job_Assistant_Users").worksheet("Users") 
 
-if "lang" not in st.session_state:
-    st.session_state.lang = "fr"
+prev_lang = st.session_state.get("lang", "fr")
+lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="language_choice")
 
-st.session_state.lang = st.sidebar.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True)
+if lang != prev_lang:
+    st.session_state.lang = lang
+    st.rerun() 
 
 # Initialize session state
 if "login_success" not in st.session_state:

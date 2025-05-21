@@ -10,13 +10,6 @@ from beautiful_cv import create_beautiful_cv
 from xhtml2pdf import pisa
 import base64
 
-prev_lang = st.session_state.get("lang", "fr")
-lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="language_choice")
-
-if lang != prev_lang:
-    st.session_state.lang = lang
-    st.rerun() 
-
 T = {
     "title": {
         "fr": "Aide à la candidature",
