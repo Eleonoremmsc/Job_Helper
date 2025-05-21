@@ -110,7 +110,7 @@ def run_applications_page():
         st.progress(int(match_score)/100)
 
         # If match is <50% : Suggestions
-        if int(match_score) < 50 and st.session_state.get("suggestions"):
+        if (match_score) < 50 and st.session_state.get("suggestions"):
             st.warning("⚠️ Le profil semble peu adapté à cette offre. Suggestions :")
             for sugg in st.session_state.suggestions:
                 st.markdown(f"- {sugg}")

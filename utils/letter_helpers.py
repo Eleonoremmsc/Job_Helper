@@ -100,17 +100,17 @@ XX
         "suggestions": suggestions
     }
     
-def save_application_for_user(email, application_data):
+def save_application_for_user(email, job_title, company, date, letter, score):
     """
     Save this application for the user using local storage or Google Sheets (adapt as needed).
     """
     sheet = get_worksheet("Applications")
     sheet.append_row([
         email,
-        application_data.get("job_title", ""),
-        application_data.get("company", ""),
-        application_data.get("date", ""),
-        application_data.get("match_score", ""),
-        application_data.get("letter", "")
+        job_title,
+        company,
+        date,
+        letter,
+        score
     ])
     
