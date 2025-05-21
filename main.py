@@ -7,7 +7,7 @@ from utils.gspread_client import get_gspread_client
 from job_helper_app import run_job_helper_app
 from create_account import create_account
 from motivation_letter import run_applications_page
-
+from utils.helpers import load_user_from_sheet
 
 client = get_gspread_client()
 sheet = client.open("Job_Assistant_Users").worksheet("Users") 
@@ -35,7 +35,7 @@ if not st.session_state.login_success:
                 st.session_state.login_success = True
                 st.session_state.name = user_info["Name"]
                 st.session_state.email = user_info["Email"]
-                st.session_state.user_data = {}
+                st.session_state.user_data = load_user_from_sheet(email)
                 st.rerun()
             else:
                 st.error("Identifiants incorrects")
