@@ -89,7 +89,7 @@ def run_applications_page():
             else:
                 with st.spinner("Rédaction en cours..."):
                     job_data = extract_job_info_from_link(offer_link)
-                    gpt_result = get_gpt_letter_and_score(user_data, job_data, extra_info, job_title, company, offer_link)
+                    gpt_result = get_gpt_letter_and_score(user_data, offer_link, extra_info, job_title, company)
                     st.session_state.generated_letter = gpt_result["letter"]
                     st.session_state.match_score = gpt_result["match_score"]
                     st.session_state.suggestions = gpt_result.get("suggestions", [])
@@ -107,18 +107,18 @@ def run_applications_page():
         match_score = st.session_state.match_score
         st.markdown(f"**Score de compatibilité : {match_score}%**")
         st.progress(match_score / 100)
-    
+
         # If match is <50% : Suggestions
         if match_score < 50 and st.session_state.get("suggestions"):
             st.warning("⚠️ Le profil semble peu adapté à cette offre. Suggestions :")
             for sugg in st.session_state.suggestions:
                 st.markdown(f"- {sugg}")
-    
+
         # Editable letter
         letter_text = st.text_area("✏️ Modifiez votre lettre ci-dessous :",
                                     value=st.session_state.generated_letter,
                                     height=500)
-    
+
         if st.button("💾 Sauvegarder cette candidature"):
             save_application_for_user(
                 email=user_data.get("email"),
