@@ -18,7 +18,7 @@ client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 def load_applications_from_sheet(email):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     rows = sheet.get_all_records()
-    return [row for row in rows if row["Email"] == email]
+    return [row for row in rows if row["email"] == email]
 
 
 # Main Application Page
