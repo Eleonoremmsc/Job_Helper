@@ -33,51 +33,16 @@ def save_application_for_user(email, job_title, company, date, letter, score, of
         datetime.now().isoformat()
     ])
 
-
-# Generate letter of motivation using GPT
-def generate_letter(user_data, offer_link, extra_info):
-    profile = f"""
-    Nom: {user_data.get('first_name', '')} {user_data.get('last_name', '')}
-    Ville: {user_data.get('location', '')}
-    Âge: {user_data.get('age', '')}
-    Téléphone: {user_data.get('phone', '')}
-    Email: {user_data.get('email', '')}
-    Description: {user_data.get('description', '')}
-    Éducation: {user_data.get('education', '')}
-    Compétences: {user_data.get('skills', '')}
-    Expérience: {user_data.get('experience', '')}
-    """
-
-    prompt = f"""
-    Tu es un assistant RH qui aide à rédiger des lettres de motivation professionnelles et personnalisées.
-    Voici le profil du candidat :
-    {profile}
-
-    Voici le lien de l'offre : {offer_link}
-    Voici des informations complémentaires : {extra_info}
-
-    Rédige une lettre de motivation convaincante, claire et adaptée à l'offre.
-    Utilise un ton professionnel, et fais au maximum une page.
-    Ne copie pas le texte de l'offre, mais montre que la candidate a compris le poste.
-    """
-
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    return response.choices[0].message.content.strip()
-
 # Main Application Page
 def run_applications_page():
+    st.title("📂 Mes candidatures")
+    
     user_data = st.session_state.get("user_data", {})
+    username = st.session_state.get("email")
+    
     if not user_data:
         st.warning("Aucun profil trouvé. Veuillez d'abord remplir votre CV dans la section '📄 Mon CV'.")
         st.stop()
-
-    st.title("📂 Mes candidatures")
-    user_data = st.session_state.get("user_data", {})
-    username = st.session_state.get("email")
 
     if not username:
         st.warning("Vous devez être connecté pour accéder à cette page.")
@@ -102,7 +67,7 @@ def run_applications_page():
                 st.warning("Merci d'ajouter un lien vers l'offre.")
             else:
                 with st.spinner("Rédaction en cours..."):
-                    job_data = extract_job_info_from_link(offer_link)
+                    #job_data = extract_job_info_from_link(offer_link)
                     gpt_result = get_gpt_letter_and_score(user_data, offer_link, extra_info, job_title, company, formatted_date)
                     st.session_state.generated_letter = gpt_result["letter"]
                     st.session_state.match_score = gpt_result["match_score"]

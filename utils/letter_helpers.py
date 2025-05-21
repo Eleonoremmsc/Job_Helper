@@ -59,7 +59,7 @@ Nom de l'entreprise : {company}
 
 Donne ta réponse dans ce format :
 === LETTRE ===\n
-[Ton texte ici]
+[Ton texte ici. Une fois que tu rédige réellement la lettre, commence par "### Lettre de Motivation" et puis n'ajoute rien d'autre à part la lettre. L'idée est que je puisse extraire tout le reste de l'output après cette ligne.]
 
 === SCORE ===\n
 XX
@@ -104,7 +104,7 @@ XX
     }
 
 SPREADSHEET_NAME = "Job_Assistant_Users"
-SHEET_NAME = "Applications"
+SHEET_NAME = "Users"
     
 def save_application_for_user(email, job_title, company, date, letter, score):
     """
