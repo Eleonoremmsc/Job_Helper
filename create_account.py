@@ -7,6 +7,11 @@ import uuid
 import json
 
 # Constants
+if "lang" not in st.session_state:
+    st.session_state.lang = "fr"
+    
+lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True)
+st.session_state.lang = lang
 
 def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -25,25 +30,25 @@ def hash_password(password):
 
 # Create account function
 def create_account():
-    st.title("Créer un compte")
+    st.title("Créer un compte" if lang == "fr" else "Create an account")
     
-    if st.button("🔐 J'ai déjà un compte"):
+    if st.button("🔐 J'ai déjà un compte" if lang == "fr" else "🔐 I already have an account"):
         st.session_state.step = "login"
         st.rerun()
     
     uid = generate_user_id()
-    name = st.text_input("Prénom")
+    name = st.text_input("Prénom" if lang == "fr" else "First Name")
     email = st.text_input("Email")
-    password = st.text_input("Mot de passe", type="password")
-    confirm = st.text_input("Confirmez le mot de passe", type="password")
+    password = st.text_input("Mot de passe" if lang == "fr" else "Password", type="password")
+    confirm = st.text_input("Confirmez le mot de passe" if lang == "fr" else "Confirm password", type="password")
         
-    if st.button("Créer mon compte"):
+    if st.button("Créer mon compte" if lang == "fr" else "Create my account"):
         if not (name and email and password and confirm):
-            st.warning("Veuillez remplir tous les champs.")
+            st.warning("Veuillez remplir tous les champs." if lang == "fr" else "Please fill out all fields.")
             return
 
         if password != confirm:
-            st.error("Les mots de passe ne correspondent pas.")
+            st.error("Les mots de passe ne correspondent pas." if lang == "fr" else "Passwords do not match.")
             return
         SPREADSHEET_NAME = "Job_Assistant_Users"
         SHEET_NAME = "Users"
@@ -51,7 +56,7 @@ def create_account():
         existing_emails = sheet.col_values(4) 
 
         if email in existing_emails:
-            st.error("Cet email est déjà utilisé.")
+            st.error("Cet email est déjà utilisé." if lang == "fr" else "This email is already used.")
             return
 
         hashed_pw = hash_password(password)
@@ -66,6 +71,6 @@ def create_account():
         ]  # Fill with empty profile fields
 
         sheet.append_row(new_row)
-        st.success("Compte créé avec succès ! Vous êtes maintenant connecté.")
+        st.success("Compte créé avec succès ! Vous êtes maintenant connecté." if lang == "fr" else "Account created successfully! You are now logged in.")
         st.session_state.step = None
         st.rerun()

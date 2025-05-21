@@ -6,8 +6,9 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from utils.helpers import load_user_from_sheet, save_user_to_sheet, sync_to_sheet
 from datetime import datetime
 from PIL import Image
-
-
+from beautiful_cv import create_beautiful_cv
+from xhtml2pdf import pisa
+import base64
 
 
 def run_job_helper_app():
@@ -349,70 +350,25 @@ def run_job_helper_app():
             ]
         )
 
-        profile_text = response.choices[0].message.content.strip()
-        edited_profile = st.text_area("✏️ Modifiez votre CV ci-dessous :", value=profile_text, height=500)
+        cv_content = response.choices[0].message.content.strip()
 
-        if st.button("📥 Télécharger mon CV (.docx)"):
-            # Re-run parsing logic here using edited_profile
-            sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
-            current_section = None
-            for line in edited_profile.split("\n"):
-                if any(line.strip().startswith(title) for title in sections):
-                    current_section = next(title for title in sections if line.strip().startswith(title))
-                    sections[current_section] = line.replace(f"{current_section} :", "").strip()
-                elif current_section:
-                    sections[current_section] += "\n" + line.strip()
+        html_cv = create_beautiful_cv(cv_content)  # This is GPT's output
+        st.components.v1.html(html_cv, height=1000, scrolling=True)
 
-            # Use `sections` for DOCX generation as you already do.
+        edited_html = st.text_area("✏️ Modifiez votre CV (HTML)", value=html_cv, height=600)
 
+        def convert_html_to_pdf(source_html, output_filename):
+            with open(output_filename, "w+b") as result_file:
+                pisa_status = pisa.CreatePDF(source_html, dest=result_file)
+            return pisa_status.err
 
-            doc = Document()
-            style = doc.styles["Normal"]
-            font = style.font
-            font.name = "Arial"
-            font.size = Pt(11)
-            doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
-            phone = user.get("phone", "")
-            email = user.get("email", "")
-            if phone or email:
-                contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
-                doc.add_paragraph(contact_line)
-
-            def add_section(title, content):
-                if content:
-                    doc.add_paragraph("")  # Spacer
-                    p_title = doc.add_paragraph()
-                    run_title = p_title.add_run(f"{title} :")
-                    run_title.bold = True
-
-                    if title in ["Compétences", "Expérience"]:
-                        for line in content.split("\n"):
-                            if line.strip():
-                                doc.add_paragraph(line.strip(), style="List Bullet")
-                    elif title == "Description":
-                        for line in content.split("."):
-                            if line.strip():
-                                doc.add_paragraph(line.strip() + ".")
-                    else:
-                        doc.add_paragraph(content)
-
-
-
-#        # Break down profile_text into parts (simple logic for now)
-#        sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
-#        current_section = None
-#        for line in profile_text.split("\n"):
-#            if any(line.strip().startswith(title) for title in sections.keys()):
-#                current_section = next(title for title in sections.keys() if line.strip().startswith(title))
-#                sections[current_section] = line.replace(f"{current_section} :", "").strip()
-#            elif current_section:
-#                sections[current_section] += " " + line.strip()
-
-        # Add formatted content
-        for title, content in sections.items():
-            add_section(title, content)
-        doc.save("mon_cv.docx")
-
-        with open("mon_cv.docx", "rb") as f:
-            st.download_button("📥 Télécharger le CV (.docx)", f, file_name="mon_cv.docx")
-            
+        if st.button("📥 Télécharger mon CV (.pdf)"):
+            filename = "mon_cv.pdf"
+            error = convert_html_to_pdf(edited_html, filename)
+            if not error:
+                with open(filename, "rb") as f:
+                    b64 = base64.b64encode(f.read()).decode()
+                    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">📄 Cliquez ici pour télécharger le CV (.pdf)</a>'
+                    st.markdown(href, unsafe_allow_html=True)
+            else:
+                st.error("Erreur lors de la génération du PDF.")
