@@ -366,47 +366,47 @@ def run_job_helper_app():
             # Use `sections` for DOCX generation as you already do.
 
 
-        doc = Document()
-        style = doc.styles["Normal"]
-        font = style.font
-        font.name = "Arial"
-        font.size = Pt(11)
-        doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
-        phone = user.get("phone", "")
-        email = user.get("email", "")
-        if phone or email:
-            contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
-            doc.add_paragraph(contact_line)
+            doc = Document()
+            style = doc.styles["Normal"]
+            font = style.font
+            font.name = "Arial"
+            font.size = Pt(11)
+            doc.add_heading(f"{user.get('first_name', '')} {user.get('last_name', '')}", level=1)
+            phone = user.get("phone", "")
+            email = user.get("email", "")
+            if phone or email:
+                contact_line = " | ".join(filter(None, [f"Téléphone : {phone}", f"Email : {email}"]))
+                doc.add_paragraph(contact_line)
 
-        def add_section(title, content):
-            if content:
-                doc.add_paragraph("")  # Spacer
-                p_title = doc.add_paragraph()
-                run_title = p_title.add_run(f"{title} :")
-                run_title.bold = True
+            def add_section(title, content):
+                if content:
+                    doc.add_paragraph("")  # Spacer
+                    p_title = doc.add_paragraph()
+                    run_title = p_title.add_run(f"{title} :")
+                    run_title.bold = True
 
-                if title in ["Compétences", "Expérience"]:
-                    for line in content.split("\n"):
-                        if line.strip():
-                            doc.add_paragraph(line.strip(), style="List Bullet")
-                elif title == "Description":
-                    for line in content.split("."):
-                        if line.strip():
-                            doc.add_paragraph(line.strip() + ".")
-                else:
-                    doc.add_paragraph(content)
+                    if title in ["Compétences", "Expérience"]:
+                        for line in content.split("\n"):
+                            if line.strip():
+                                doc.add_paragraph(line.strip(), style="List Bullet")
+                    elif title == "Description":
+                        for line in content.split("."):
+                            if line.strip():
+                                doc.add_paragraph(line.strip() + ".")
+                    else:
+                        doc.add_paragraph(content)
 
 
 
-        # Break down profile_text into parts (simple logic for now)
-        sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
-        current_section = None
-        for line in profile_text.split("\n"):
-            if any(line.strip().startswith(title) for title in sections.keys()):
-                current_section = next(title for title in sections.keys() if line.strip().startswith(title))
-                sections[current_section] = line.replace(f"{current_section} :", "").strip()
-            elif current_section:
-                sections[current_section] += " " + line.strip()
+#        # Break down profile_text into parts (simple logic for now)
+#        sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
+#        current_section = None
+#        for line in profile_text.split("\n"):
+#            if any(line.strip().startswith(title) for title in sections.keys()):
+#                current_section = next(title for title in sections.keys() if line.strip().startswith(title))
+#                sections[current_section] = line.replace(f"{current_section} :", "").strip()
+#            elif current_section:
+#                sections[current_section] += " " + line.strip()
 
         # Add formatted content
         for title, content in sections.items():

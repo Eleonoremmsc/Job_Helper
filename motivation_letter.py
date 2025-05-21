@@ -81,6 +81,7 @@ def run_applications_page():
         job_title = st.text_input("Nom du poste")
         company = st.text_input("Nom de l'entreprise")
         selected_date = st.date_input("Date", value=date.today())
+        formatted_date = selected_date.strftime("%d/%m/%Y")
         extra_info = st.text_area("Informations complémentaires (facultatif)")
         
         if st.button("✍️ Générer ma lettre de motivation"):
@@ -96,7 +97,7 @@ def run_applications_page():
                     st.session_state.application_meta = {
                         "job_title": job_title,
                         "company": company,
-                        "date": selected_date.strftime("%d/%m/%Y")
+                        "date": formatted_date                       
                     }
                     st.rerun()
         elif "generated_letter" in st.session_state:

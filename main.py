@@ -60,7 +60,6 @@ else:
     elif menu_option == "📂 Mes candidatures":
         st.subheader("📂 Mes candidatures")
         run_applications_page()
-        st.write("À venir : un espace pour voir, modifier et suivre vos candidatures envoyées.")
 
     elif menu_option == "🎤 Préparation aux entretiens":
         st.subheader("🎤 Préparation aux entretiens")
