@@ -12,6 +12,7 @@ import base64
 
 
 def run_job_helper_app():
+    lang = st.session_state.get("lang", "fr")
 
     # DEBUG_MODE = True si tu veux modifier l'appli sans utiliser ChatGPT à chaque fois (Tokens)
     DEBUG_MODE = False
