@@ -106,7 +106,7 @@ def run_applications_page():
     if "match_score" in st.session_state and "generated_letter" in st.session_state:
         match_score = st.session_state.match_score
         st.markdown(f"**Score de compatibilité : {match_score}%**")
-        st.progress(match_score / 100)
+        st.progress(int(match_score)/100)
 
         # If match is <50% : Suggestions
         if match_score < 50 and st.session_state.get("suggestions"):
