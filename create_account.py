@@ -6,9 +6,12 @@ import bcrypt
 import uuid
 import json
 
-if "lang" not in st.session_state:
-    st.session_state.lang = "fr"
-lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="Create_Account_Lang")
+prev_lang = st.session_state.get("lang", "fr")
+lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="language_choice")
+
+if lang != prev_lang:
+    st.session_state.lang = lang
+    st.rerun() 
 
 def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]

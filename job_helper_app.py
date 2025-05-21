@@ -116,7 +116,10 @@ T = {
     "education": {"fr": "Votre parcours scolaire", "en": "Education"},
     "skills": {"fr": "Vos compétences", "en": "Skills"},
     "experience": {"fr": "Vos expériences professionnelles", "en": "Professional experience"},
-
+    "missing_email": {
+        "fr": "❗ Email manquant.",
+        "en": "❗ Missing email."
+    }
 }
 
 
@@ -230,7 +233,7 @@ def run_job_helper_app():
 
             col1, col2 = st.columns(2)
             with col1:
-                if st.button(T["modify"][lang]):
+                if st.button(T["save"][lang]):
                     for line in editable_block.strip().split("\n"):
                         if ":" in line:
                             key, value = line.split(":", 1)
@@ -259,13 +262,15 @@ def run_job_helper_app():
 
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
                     user_email = st.session_state.user_data.get("email")
+                    
                     if user_email:
                         save_user_to_sheet(st.session_state.user_data)
                         sync_to_sheet(st.session_state.user_data)
-
-                    st.success(T["info_updated"][lang])
-                    st.session_state.edit_mode = False
-                    st.rerun()
+                        st.success(T["info_updated"][lang])
+                    else:
+                        st.warning(T["missing_email"][lang])
+                        st.session_state.edit_mode = False
+                        st.rerun()
 
             with col2:
                 if st.button(T["cancel"][lang]):
