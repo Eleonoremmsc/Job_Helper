@@ -6,13 +6,9 @@ import bcrypt
 import uuid
 import json
 
-# Constants
 if "lang" not in st.session_state:
     st.session_state.lang = "fr"
     
-lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True)
-st.session_state.lang = lang
-
 def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
@@ -30,6 +26,10 @@ def hash_password(password):
 
 # Create account function
 def create_account():
+
+    lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="Create_Account_Lang")
+    st.session_state.lang = lang
+    
     st.title("Créer un compte" if lang == "fr" else "Create an account")
     
     if st.button("🔐 J'ai déjà un compte" if lang == "fr" else "🔐 I already have an account"):
