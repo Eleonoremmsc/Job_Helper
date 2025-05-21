@@ -64,9 +64,9 @@ def run_job_helper_app():
         if user_data and not st.session_state.edit_mode:
             with st.expander("👀 Aperçu de votre profil sauvegardé", expanded=True):
                 st.markdown(f"""
-                **Nom :** {user_data.get("first_name", "")} {user_data.get("last_name", "")}  
+                **Nom :** {user_data.get("First Name", "")} {user_data.get("Last Name", "")}  
                 **Téléphone :** {user_data.get("phone", "")}  
-                **Email :** {user_data.get("email", "")}  
+                **Email :** {user_data.get("Email", "")}  
                 **Ville :** {user_data.get("location", "")}  
                 **Âge :** {user_data.get("age", "")}  
                 **Description :** {user_data.get("description", "")[:100]}...
