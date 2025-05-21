@@ -46,7 +46,7 @@ if not st.session_state.login_success:
 
 # 🌟 STEP: AFTER LOGIN
 else:
-    st.sidebar.write(f"👤 Connecté en tant que {st.session_state.name}")
+    st.sidebar.write(f"👤 Connecté en tant que {st.session_state.First_Name}")
     if st.sidebar.button("Se déconnecter"):
         st.session_state.clear()
         st.rerun()
