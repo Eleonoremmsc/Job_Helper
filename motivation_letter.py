@@ -38,17 +38,17 @@ def run_applications_page():
     st.title("📂 Mes candidatures")
     
     user_data = st.session_state.get("user_data", {})
-    username = st.session_state.get("email")
+    email = st.session_state.get("email")
     
     if not user_data:
         st.warning("Aucun profil trouvé. Veuillez d'abord remplir votre CV dans la section '📄 Mon CV'.")
         st.stop()
 
-    if not username:
+    if not email:
         st.warning("Vous devez être connecté pour accéder à cette page.")
         return
 
-    user_apps = load_applications_from_sheet()
+    user_apps = load_applications_from_sheet(email)
 
     # Sidebar to add new application
     with st.expander("➕ Créer une nouvelle candidature"):
