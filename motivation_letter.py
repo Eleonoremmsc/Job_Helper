@@ -8,18 +8,21 @@ from datetime import date
 from utils.letter_helpers import extract_job_info_from_link, get_gpt_letter_and_score, save_application_for_user
 from create_account import get_worksheet
 
+SPREADSHEET_NAME = "Job_Assistant_Users"
+SHEET_NAME = "Applications"
+
 # Constants
 client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
 # Load user applications from disk
 def load_applications_from_sheet(email):
-    sheet = get_worksheet("Job_Assistant_Applications", "Applications")
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     rows = sheet.get_all_records()
     return [row for row in rows if row["Email"] == email]
 
 # Save user applications to disk
 def save_application_for_user(email, job_title, company, date, letter, score, offer_link="", extra_info=""):
-    sheet = get_worksheet("Job_Assistant_Applications", "Applications")
+    sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     sheet.append_row([
         str(uuid.uuid4()),
         email,
