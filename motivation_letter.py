@@ -80,7 +80,7 @@ def run_applications_page():
         offer_link = st.text_input("🔗 Lien de l'offre")
         job_title = st.text_input("Nom du poste")
         company = st.text_input("Nom de l'entreprise")
-        date = st.date_input("Date", value=date.today())
+        date_var = st.date_input("Date", value=date.today())
         extra_info = st.text_area("Informations complémentaires (facultatif)")
         
         if st.button("✍️ Générer ma lettre de motivation"):
