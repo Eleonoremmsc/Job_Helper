@@ -39,8 +39,8 @@ T = {
         "en": "🔄 Restart"
     },
     "continue": {
-        "fr": "➡️ Continuer vers la génération du PDF",
-        "en": "➡️ Continue to PDF generation"
+        "fr": "➡️ Continuer vers la génération du CV",
+        "en": "➡️ Continue to CV generation"
     },
     "download_cv": {
         "fr": "📥 Télécharger mon CV (.pdf)",
@@ -105,6 +105,10 @@ T = {
     "analyse_me": {
         "fr": "Analyser mon profil",
         "en": "Analyse my profile"
+    },
+    "generate_recs": {
+        "fr": "💡 Générer des recommendations",
+        "en": "💡 Generate Recommendations"
     },
     "phone": {"fr": "Téléphone", "en": "Phone"},
     "email": {"fr": "Email", "en": "Email"},
@@ -277,7 +281,8 @@ def run_job_helper_app():
                     st.rerun()
 
         # CASE 3 — Ask input method
-        if st.session_state.step == "input_mode" and not st.session_state.edit_mode and not st.session_state.user_data.get("summary") and not st.session_state.user_data.get("first_name"):
+        #elif st.session_state.step == "input_mode" and not st.session_state.edit_mode and not st.session_state.user_data.get("summary") and not st.session_state.user_data.get("first_name"):
+        else:
             prompt = {
                 "fr": "Souhaitez-vous entrer un résumé ou remplir les informations une par une ?",
                 "en": "Would you like to enter a summary or fill in your information step by step?"
@@ -286,13 +291,16 @@ def run_job_helper_app():
                 "fr": ["Résumé global", "Questions une par une"],
                 "en": ["Résumé global", "Questions une par une"]  # You can translate if you prefer
             }
-    
+
             mode = st.radio(prompt[lang], mode_options[lang], key="input_mode_radio")
             st.session_state.input_mode = mode
-    
+
             if st.button(T["continue"][lang]):
                 st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
 
+        if st.button(T["generate_recs"][lang]):
+            st.session_state.step = "recommend"
+            st.rerun()
 
         # Step 2A: Il soumets un Résumé global
     if st.session_state.step == "summary_input":
@@ -453,6 +461,10 @@ def run_job_helper_app():
             
             if st.button(T["generate_pdf"][lang]):
                 st.session_state.step = "generate"
+                
+        if st.button(T["continue"][lang]):
+            st.session_state.step = "generate"
+            st.rerun()
 
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
