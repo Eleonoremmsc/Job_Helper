@@ -10,6 +10,12 @@ from beautiful_cv import create_beautiful_cv
 from xhtml2pdf import pisa
 import base64
 
+prev_lang = st.session_state.get("lang", "fr")
+lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="language_choice")
+
+if lang != prev_lang:
+    st.session_state.lang = lang
+    st.rerun() 
 
 T = {
     "title": {
@@ -95,7 +101,22 @@ T = {
     "modify_cv": {
         "fr": "✏️ Modifiez votre CV (HTML)",
         "en": "✏️ Modify your CV (HTML)"
-    }
+    },
+    "analyse_me": {
+        "fr": "Analyser mon profil",
+        "en": "Analyse my profile"
+    },
+    "phone": {"fr": "Téléphone", "en": "Phone"},
+    "email": {"fr": "Email", "en": "Email"},
+    "first_name": {"fr": "Prénom", "en": "First Name"},
+    "last_name": {"fr": "Nom", "en": "Last Name"},
+    "age": {"fr": "Âge", "en": "Age"},
+    "city": {"fr": "Ville", "en": "City"},
+    "desc": {"fr": "Décrivez-vous", "en": "Describe yourself"},
+    "education": {"fr": "Votre parcours scolaire", "en": "Education"},
+    "skills": {"fr": "Vos compétences", "en": "Skills"},
+    "experience": {"fr": "Vos expériences professionnelles", "en": "Professional experience"},
+
 }
 
 
@@ -269,24 +290,25 @@ def run_job_helper_app():
                            "Je suis à l’aise avec le contact client et je sais gérer la caisse. "
                            "J’aimerais trouver un emploi stable dans la restauration ou l’accueil.")
         summary = st.text_area("Écrivez votre résumé ici (en français)", height=250, value=default_summary if DEBUG_MODE else "")
-        if st.button("Analyser mon profil"):
+        if st.button(T["analyse_me"][lang]):
             st.session_state.user_data = {"summary": summary.strip()}
             st.session_state.step = "recommend"
 
     # Step 2B: Il utilise les Champs classiques
     if st.session_state.step == "form_input":
         with st.form("profile_form"):
-            phone = st.text_input("Téléphone", "06 12 34 56 78" if DEBUG_MODE else "")
-            email = st.text_input("Email", "jeanne@example.com" if DEBUG_MODE else "")
-            first_name = st.text_input("Prénom", "Jeanne" if DEBUG_MODE else "")
-            last_name = st.text_input("Nom", "Dupont" if DEBUG_MODE else "")
-            age = st.number_input("Âge", min_value=0, max_value=120, value=32 if DEBUG_MODE else 0)
-            location = st.text_input("Ville", "Marseille" if DEBUG_MODE else "")
-            description = st.text_area("Décrivez-vous", "Dynamique et organisée, je cherche un emploi stable." if DEBUG_MODE else "")
-            education = st.text_area("Votre parcours scolaire", "CAP Cuisine" if DEBUG_MODE else "")
-            skills = st.text_area("Vos compétences", "Ponctualité, gestion de caisse, service client" if DEBUG_MODE else "")
-            experience = st.text_area("Vos expériences professionnelles", "Serveuse (2 ans), cantine scolaire (1 an)" if DEBUG_MODE else "")
-            submitted = st.form_submit_button("Analyser mon profil")
+            phone = st.text_input(T["phone"][lang])
+            email = st.text_input(T["email"][lang])
+            first_name = st.text_input(T["first_name"][lang])
+            last_name = st.text_input(T["last_name"][lang])
+            age = st.number_input(T["age"][lang], min_value=0, max_value=120, value=32 if DEBUG_MODE else 0)
+            location = st.text_input(T["city"][lang])
+            description = st.text_area(T["desc"][lang])
+            education = st.text_area(T["education"][lang])
+            skills = st.text_area(T["skills"][lang])
+            experience = st.text_area(T["experience"][lang])
+            submitted = st.form_submit_button(T["analyze"][lang])
+
 
         if submitted:
             st.session_state.user_data = {
@@ -321,16 +343,26 @@ def run_job_helper_app():
         user = st.session_state.user_data
 
         content = user.get("summary", "") or f"""
-    Nom: {user.get('first_name', '')} {user.get('last_name', '')}
-    Téléphone: {user.get('phone', '')}
-    Email: {user.get('email', '')}
-    Âge: {user.get('age', '')}
-    Lieu: {user.get('location', '')}
-    Description: {user.get('description', '')}
-    Éducation: {user.get('education', '')}
-    Compétences: {user.get('skills', '')}
-    Expérience: {user.get('experience', '')}
-    """
+        Nom: {user.get('first_name', '')} {user.get('last_name', '')}
+        Téléphone: {user.get('phone', '')}
+        Email: {user.get('email', '')}
+        Âge: {user.get('age', '')}
+        Lieu: {user.get('location', '')}
+        Description: {user.get('description', '')}
+        Éducation: {user.get('education', '')}
+        Compétences: {user.get('skills', '')}
+        Expérience: {user.get('experience', '')}
+        """ if lang == "fr" else f"""
+        Name: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
+        Phone: {user_data.get("phone", "")}
+        Email: {user_data.get("email", "")}
+        Age: {user_data.get("age", "")}
+        City: {user_data.get("location", "")}
+        Description: {user_data.get("description", "")}
+        Education: {user_data.get("education", "")}
+        Skills: {user_data.get("skills", "")}
+        Professional Experience: {user_data.get("experience", "")}
+        """
 
         if not st.session_state.recommendations and not DEBUG_MODE:
             with st.spinner(T["profile_analysis"][lang]):
