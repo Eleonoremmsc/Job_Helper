@@ -350,7 +350,21 @@ def run_job_helper_app():
         )
 
         profile_text = response.choices[0].message.content.strip()
-        st.text(profile_text)
+        edited_profile = st.text_area("✏️ Modifiez votre CV ci-dessous :", value=profile_text, height=500)
+
+        if st.button("📥 Télécharger mon CV (.docx)"):
+            # Re-run parsing logic here using edited_profile
+            sections = {"Description": "", "Éducation": "", "Compétences": "", "Expérience": ""}
+            current_section = None
+            for line in edited_profile.split("\n"):
+                if any(line.strip().startswith(title) for title in sections):
+                    current_section = next(title for title in sections if line.strip().startswith(title))
+                    sections[current_section] = line.replace(f"{current_section} :", "").strip()
+                elif current_section:
+                    sections[current_section] += "\n" + line.strip()
+
+            # Use `sections` for DOCX generation as you already do.
+
 
         doc = Document()
         style = doc.styles["Normal"]
