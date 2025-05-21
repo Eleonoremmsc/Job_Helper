@@ -102,21 +102,23 @@ def run_applications_page():
         elif "generated_letter" in st.session_state:
             st.subheader("📄 Lettre de motivation générée avec succès !")
             
+        # Only show this block if match_score exists (i.e., a letter was generated)
+    if "match_score" in st.session_state and "generated_letter" in st.session_state:
         match_score = st.session_state.match_score
         st.markdown(f"**Score de compatibilité : {match_score}%**")
-        st.progress(match_score/100)
-        
+        st.progress(match_score / 100)
+    
         # If match is <50% : Suggestions
-        if match_score < 50 and st.session_state.suggestions:
-            st.warning("⚠️ Le profile semble peu adapté à cette offre.Suggestions :")
+        if match_score < 50 and st.session_state.get("suggestions"):
+            st.warning("⚠️ Le profil semble peu adapté à cette offre. Suggestions :")
             for sugg in st.session_state.suggestions:
                 st.markdown(f"- {sugg}")
-        
+    
         # Editable letter
         letter_text = st.text_area("✏️ Modifiez votre lettre ci-dessous :",
                                     value=st.session_state.generated_letter,
                                     height=500)
-
+    
         if st.button("💾 Sauvegarder cette candidature"):
             save_application_for_user(
                 email=user_data.get("email"),
@@ -131,6 +133,7 @@ def run_applications_page():
             st.session_state.pop("match_score")
             st.session_state.pop("application_meta")
             st.rerun()
+
 
     st.markdown("---")
     st.subheader("📁 Mes lettres de motivation sauvegardées")
