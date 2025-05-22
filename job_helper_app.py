@@ -31,7 +31,7 @@ T = {
         "fr": "🔄 Recommencer",
         "en": "🔄 Restart"
     },
-    "continue": {
+    "generate_cv": {
         "fr": "➡️ Continuer vers la génération du CV",
         "en": "➡️ Continue to CV generation"
     },
@@ -288,13 +288,13 @@ def run_job_helper_app():
             mode = st.radio(prompt[lang], mode_options[lang], key="input_mode_radio")
             st.session_state.input_mode = mode
 
-            if st.button(T["continue"][lang]):
+            if st.button(T["generate_cv"][lang]):
                 st.session_state.step = "summary_input" if mode == "Résumé global" else "form_input"
 
         if st.button(T["generate_recs"][lang]):
             st.session_state.step = "recommend"
             st.rerun()
-        if st.button(T["continue"][lang]):
+        if st.button(T["generate_cv"][lang]):
             st.session_state.step = "generate"
             st.rerun()
 
@@ -465,11 +465,8 @@ def run_job_helper_app():
         if all(r is None for r in st.session_state.recommendations):
             st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
             sync_to_sheet(st.session_state.user_data)
-            
-            if st.button(T["generate_pdf"][lang]):
-                st.session_state.step = "generate"
                 
-        if st.button(T["continue"][lang]):
+        if st.button(T["generate_cv"][lang]):
             st.session_state.step = "generate"
             st.rerun()
 
