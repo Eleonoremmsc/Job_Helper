@@ -5,6 +5,9 @@ from datetime import datetime
 import bcrypt
 import uuid
 import json
+from utils.language import language_selector
+
+language_selector()
 
 def get_worksheet(SPREADSHEET_NAME, SHEET_NAME):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]

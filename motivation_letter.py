@@ -7,6 +7,9 @@ import datetime
 from datetime import date
 from utils.letter_helpers import extract_job_info_from_link, get_gpt_letter_and_score, save_application_for_user
 from create_account import get_worksheet
+from utils.language import language_selector
+
+language_selector()
 
 SPREADSHEET_NAME = "Job_Assistant_Users"
 SHEET_NAME = "Applications"

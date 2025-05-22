@@ -2,6 +2,7 @@ import datetime
 from datetime import datetime
 from create_account import get_worksheet
 import uuid
+import json
 
 SPREADSHEET_NAME = "Job_Assistant_Users"
 SHEET_NAME = "Users"
@@ -25,14 +26,23 @@ def save_user_to_sheet(user_data):
                 row.get("education", ""),
                 row.get("skills", ""),
                 row.get("experience", ""),
-                "\n".join(row.get("accepted_suggestions", [])),
+                json.dumps(user_data.get("accepted_suggestions", [])),
                 row.get("last_updated", datetime.now().isoformat()),
             ]])
 
 def load_user_from_sheet(email):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     rows = sheet.get_all_records()
-    return next((row for row in rows if row["Email"] == email), {})
+    for row in rows:
+        if row["Email"] == email:
+            # Parse accepted_suggestions back from JSON
+            if isinstance(row.get("accepted_suggestions"), str):
+                try:
+                    row["accepted_suggestions"] = json.loads(row["accepted_suggestions"])
+                except:
+                    row["accepted_suggestions"] = []
+            return row
+    return {}
 
 def sync_to_sheet(user_data):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
@@ -55,7 +65,7 @@ def sync_to_sheet(user_data):
         user_data.get("education", ""),
         user_data.get("skills", ""),
         user_data.get("experience", ""),
-        "\n".join(user_data.get("accepted_suggestions", [])),
+        json.dumps(user_data.get("accepted_suggestions", [])),
         user_data.get("last_updated", datetime.now().isoformat()),
         user_data.get("created_at", datetime.now().isoformat())
     ])

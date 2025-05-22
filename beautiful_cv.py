@@ -5,12 +5,12 @@ client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
 
 def create_beautiful_cv(content):
-    prompt = f"""
+    prompt = """
 
     Tu es un assistant bienveillant qui aide à enrichir des profils pour un CV.
     Voici un profil utilisateur :
     -----------------------
-    {content}
+    """+content+"""
     -----------------------
     Tu dois remplacer chaque partie entre guillemets et doubles accolades (comme "{{Prénom Nom}}") par la donnée correspondante du profil.
 

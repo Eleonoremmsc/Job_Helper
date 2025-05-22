@@ -146,9 +146,9 @@ def run_job_helper_app():
     else:
         st.info(T["no_profile"][lang])
 
-    if st.button(T["restart"][lang]):
-        st.session_state.clear()
-        st.rerun()
+    #if st.button(T["restart"][lang]):
+    #    st.session_state.clear()
+    #    st.rerun()
         
         
 
@@ -239,7 +239,7 @@ def run_job_helper_app():
                                 parts = value.split()
                                 st.session_state.user_data["first_name"] = parts[0] if parts else ""
                                 st.session_state.user_data["last_name"] = " ".join(parts[1:]) if len(parts) > 1 else ""
-                            elif "téléphone" or "Phone" in key:
+                            elif "téléphone" in key or "Phone" in key:
                                 st.session_state.user_data["phone"] = value
                             elif "email" in key:
                                 st.session_state.user_data["email"] = value
@@ -365,17 +365,17 @@ def run_job_helper_app():
         Compétences: {user.get('skills', '')}
         Expérience: {user.get('experience', '')}
         """ if lang == "fr" else f"""
-        Name: {user_data.get("first_name", "")} {user_data.get("last_name", "")}
-        Phone: {user_data.get("phone", "")}
-        Email: {user_data.get("email", "")}
-        Age: {user_data.get("age", "")}
-        City: {user_data.get("location", "")}
-        Description: {user_data.get("description", "")}
-        Education: {user_data.get("education", "")}
-        Skills: {user_data.get("skills", "")}
-        Professional Experience: {user_data.get("experience", "")}
+        Name: {user.get("first_name", "")} {user.get("last_name", "")}
+        Phone: {user.get("phone", "")}
+        Email: {user.get("email", "")}
+        Age: {user.get("age", "")}
+        City: {user.get("location", "")}
+        Description: {user.get("description", "")}
+        Education: {user.get("education", "")}
+        Skills: {user.get("skills", "")}
+        Professional Experience: {user.get("experience", "")}
         """
-
+        existing = set(st.session_state.accepted_suggestions)
         if not st.session_state.recommendations and not DEBUG_MODE:
             with st.spinner(T["profile_analysis"][lang]):
                 prompt = f"""
@@ -391,7 +391,7 @@ def run_job_helper_app():
             - directement ajoutable à un CV si la réponse est oui.
 
             N’utilise pas de formulations vagues comme “des langues étrangères” ou “des langages de programmation”.
-            Choisis un seul exemple concret par question.
+            Choisis un seul exemple concret par question et évite les suggestions déjà acceptées : [{existing}].
 
             Exemples :
             - Puis-je ajouter que vous avez le permis B ?
@@ -428,11 +428,20 @@ def run_job_helper_app():
                         if st.button(T["accept"][lang], key=f"accept_{i}"):
                             st.session_state.accepted_suggestions.append(rec)
                             st.session_state.recommendations[i] = None
+                            st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
+                            sync_to_sheet(st.session_state.user_data)
                             st.rerun()
 
                     with col2:
                         if st.button(T["modify"][lang], key=f"mod_button_{i}"):
-                            st.session_state[f"modifying_{i}"] = True
+                            if st.button(T["save"][lang], key=f"save_mod_{i}"):
+                                modified = st.session_state[f"mod_text_{i}"].strip()
+                                st.session_state.accepted_suggestions.append(modified)
+                                st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
+                                sync_to_sheet(st.session_state.user_data)
+                                st.session_state.recommendations[i] = None
+                                st.session_state[f"modifying_{i}"] = False
+                                st.rerun()
 
                     with col3:
                         if st.button(T["reject"][lang], key=f"reject_{i}"):
@@ -446,6 +455,8 @@ def run_job_helper_app():
                             st.session_state.accepted_suggestions.append(modified)
                             st.session_state.recommendations[i] = None
                             st.session_state[f"modifying_{i}"] = False
+                            st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
+                            sync_to_sheet(st.session_state.user_data)
                             st.rerun()
 
         if all(r is None for r in st.session_state.recommendations):
@@ -461,10 +472,11 @@ def run_job_helper_app():
 
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
-        user = st.session_state.user_data
         email = st.session_state.user_data.get("email")
-        saved_user = load_user_from_sheet(email)
-        #accepted_suggestions = saved_user.get("accepted_suggestions", [])
+        user_data = load_user_from_sheet(email)
+        st.session_state.user_data = user_data
+        st.session_state.accepted_suggestions = user_data.get("accepted_suggestions", [])
+
         
         st.subheader(T["final_result"][lang])
 

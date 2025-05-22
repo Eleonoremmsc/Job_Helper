@@ -8,16 +8,14 @@ from job_helper_app import run_job_helper_app
 from create_account import create_account
 from motivation_letter import run_applications_page
 from utils.helpers import load_user_from_sheet
+from utils.language import language_selector
+
+language_selector()
 
 client = get_gspread_client()
 sheet = client.open("Job_Assistant_Users").worksheet("Users") 
 
-prev_lang = st.session_state.get("lang", "fr")
-lang = st.radio("Choisissez votre langue / Choose your language", ["fr", "en"], horizontal=True, key="language_choice")
-
-if lang != prev_lang:
-    st.session_state.lang = lang
-    st.rerun() 
+lang = st.session_state.get("lang", "fr")
 
 # Initialize session state
 if "login_success" not in st.session_state:
@@ -41,7 +39,9 @@ if not st.session_state.login_success:
             if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
                 st.session_state.login_success = True
                 st.session_state.email = user_info["Email"]
-                st.session_state.user_data = load_user_from_sheet(email)
+                user_data = load_user_from_sheet(email)
+                st.session_state.user_data = user_data
+                st.session_state.accepted_suggestions = user_data.get("accepted_suggestions", [])
                 st.rerun()
             else:
                 st.error("Identifiants incorrects")
