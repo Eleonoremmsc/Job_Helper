@@ -64,9 +64,11 @@ def create_account():
             uid,
             name,
             email,
+            "",
             hashed_pw,
-            datetime.now().isoformat(),
-            "", "", "", "", "", "", "", "", ""
+            "",
+            "", "", "", "", "", "", "", "", "",
+            datetime.now()
         ]  # Fill with empty profile fields
 
         sheet.append_row(new_row)
