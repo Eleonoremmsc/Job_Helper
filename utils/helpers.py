@@ -26,6 +26,8 @@ def save_user_to_sheet(user_data):
                 row.get("education", ""),
                 row.get("skills", ""),
                 row.get("experience", ""),
+                row.get("hobbies", ""),
+                row.get("languages", ""),
                 json.dumps(user_data.get("accepted_suggestions", [])),
                 row.get("last_updated", datetime.now().isoformat()),
             ]])
@@ -69,6 +71,8 @@ def sync_to_sheet(user_data):
         user_data.get("education", ""),
         user_data.get("skills", ""),
         user_data.get("experience", ""),
+        user_data.get("hobbies", ""),
+        user_data.get("languages", ""),
         json.dumps(user_data.get("accepted_suggestions", [])),
         user_data.get("last_updated", datetime.now().isoformat()),
         user_data.get("created_at", datetime.now().isoformat())

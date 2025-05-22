@@ -113,6 +113,8 @@ T = {
     "education": {"fr": "Votre parcours scolaire", "en": "Education"},
     "skills": {"fr": "Vos compétences", "en": "Skills"},
     "experience": {"fr": "Vos expériences professionnelles", "en": "Professional experience"},
+    "hobbies": {"fr": "Vos hobbies", "en": "Hobbies"},
+    "languages": {"fr": "Quelles langues maîtrisez vous ?", "en": "Languages"},
     "missing_email": {
         "fr": "❗ Email manquant.",
         "en": "❗ Missing email."
@@ -209,7 +211,9 @@ def run_job_helper_app():
                                                 Description: {user_data.get("description", "")}
                                                 Education: {user_data.get("education", "")}
                                                 Skills: {user_data.get("skills", "")}
-                                                Professional Experience: {user_data.get("experience", "")}
+                                                Professional Experience: {user_data.get("experience", "")},
+                                                Hobbies: {user_data.get("hobbies", "")},
+                                                Languages: {user_data.get("languages", "")}
                                                 """, 
                                            height=300)
             else:
@@ -223,7 +227,9 @@ def run_job_helper_app():
                                                     Description: {user_data.get("description", "")}
                                                     Éducation: {user_data.get("education", "")}
                                                     Compétences: {user_data.get("skills", "")}
-                                                    Expérience: {user_data.get("experience", "")}
+                                                    Expérience: {user_data.get("experience", "")},
+                                                    Hobbies: {user_data.get("hobbies", "")},
+                                                    Langues: {user_data.get("languages", "")}
                                                     """, 
                                                height=300)
 
@@ -255,6 +261,10 @@ def run_job_helper_app():
                                 st.session_state.user_data["skills"] = value
                             elif "expérience" in key:
                                 st.session_state.user_data["experience"] = value
+                            elif "hobbies" in key:
+                                st.session_state.user_data["hobbies"] = value
+                            elif "langues" in key:
+                                st.session_state.user_data["languages"] = value
 
                     st.session_state.user_data["last_updated"] = datetime.now().isoformat()
                     user_email = st.session_state.user_data.get("email")
@@ -322,6 +332,8 @@ def run_job_helper_app():
             education = st.text_area(T["education"][lang])
             skills = st.text_area(T["skills"][lang])
             experience = st.text_area(T["experience"][lang])
+            hobbies = st.text_area(T["hobbies"][lang])
+            languages = st.text_area(T["languages"][lang])
             submitted = st.form_submit_button(T["analyze"][lang])
 
 
@@ -337,6 +349,8 @@ def run_job_helper_app():
                 "education": education.strip(),
                 "skills": skills.strip(),
                 "experience": experience.strip(),
+                "hobbies":hobbies.strip(),
+                "languages":languages.strip(),
                 "last_updated": datetime.now().isoformat()
 
             }
@@ -367,6 +381,8 @@ def run_job_helper_app():
         Éducation: {user.get('education', '')}
         Compétences: {user.get('skills', '')}
         Expérience: {user.get('experience', '')}
+        Hobbies: {user_data.get("hobbies", "")}
+        Langues: {user_data.get("languages", "")}
         """ if lang == "fr" else f"""
         Name: {user.get("first_name", "")} {user.get("last_name", "")}
         Phone: {user.get("phone", "")}
@@ -377,6 +393,8 @@ def run_job_helper_app():
         Education: {user.get("education", "")}
         Skills: {user.get("skills", "")}
         Professional Experience: {user.get("experience", "")}
+        Hobbies: {user_data.get("hobbies", "")},
+        Languages: {user_data.get("languages", "")}
         """
         existing = set(st.session_state.accepted_suggestions)
         if not st.session_state.recommendations and not DEBUG_MODE:
@@ -501,6 +519,8 @@ def run_job_helper_app():
         Éducation: {user.get('education', '')}
         Compétences: {user.get('skills', '')}
         Expérience professionnelle: {user.get('experience', '')}
+        Hobbies: {user_data.get("hobbies", "")}
+        Languages: {user_data.get("languages", "")}
         Suggestions acceptées:
         {chr(10).join(user.get("accepted_suggestions", []))}
         """
