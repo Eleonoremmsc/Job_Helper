@@ -493,34 +493,43 @@ def run_job_helper_app():
             all_skills += "\n" + "\n".join(st.session_state.accepted_suggestions)
 
         profile_input = f"""
+        Prénom: {user.get('first_name', '')}
+        Nom: {user.get('last_name', '')}
+        Âge: {user.get('age', '')}
+        Ville: {user.get('location', '')}
         Description: {user.get('description', '')}
         Éducation: {user.get('education', '')}
-        Compétences: {all_skills}
-        Expérience: {user.get('experience', '')}
+        Compétences: {user.get('skills', '')}
+        Expérience professionnelle: {user.get('experience', '')}
+        Suggestions acceptées:
+        {chr(10).join(user.get("accepted_suggestions", []))}
         """
 
+
         reformulate_prompt = f"""
-    Tu es un assistant RH bienveillant. À partir des informations suivantes, rédige un contenu clair, professionnel et valorisant, structuré comme un CV.
+Tu es un assistant RH bienveillant. À partir des informations suivantes, rédige un contenu clair, professionnel et valorisant, structuré comme un CV.
 
-    Organise la sortie finale en 4 sections bien rédigées :
-    - Une **description** du profil (2-4 phrases maximum)
-    - Une section **Éducation** (études, diplômes)
-    - Une section **Compétences** (sous forme de liste claire)
-    - Une section **Expérience** (avec missions ou tâches, 2-3 lignes max par poste)
+📌 Utilise uniquement les données fournies. N'invente jamais de noms d'écoles, de villes, ou d'entreprises.
+📌 Si une section est vide, omets-la (ne la remplis pas avec des informations fictives).
+📌 Si certaines suggestions acceptées sont pertinentes, intègre-les dans les bonnes sections.
 
-    Voici les informations à traiter :
+Organise la sortie finale en 4 sections bien rédigées :
+- Une **Description** (2-4 phrases max)
+- Une section **Éducation**
+- Une section **Compétences** (liste à puces)
+- Une section **Expérience professionnelle** (2-3 lignes max par poste)
 
-    {profile_input}
+Voici les données du profil :
 
-    ✅ Rédige directement le texte final, sans poser de questions.
-    ✅ Si certaines suggestions sont utiles, intègre-les naturellement au bon endroit.
-    ✅ Ne reformule pas les titres. Commence directement par :
-    Description :
-    Éducation :
-    ...
-    
-    Réponds entièrement en français ou anglais selon cette clé: {lang}
-    """
+{profile_input}
+
+Réponds entièrement en {lang}.
+Commence directement par :
+Description :
+Éducation :
+...
+"""
+
 
 
         response = client.chat.completions.create(
