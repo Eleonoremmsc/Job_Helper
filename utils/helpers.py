@@ -88,7 +88,7 @@ def get_all_user_records():
     records = []
     
     for row in raw[1:]:
-        row+= [""]* len(headers)-len(row)
+        row += [""] * (len(headers) - len(row))
         record = dict(zip(headers, row))
         records.append(record)
         
