@@ -68,7 +68,7 @@ if not st.session_state.login_success:
 
 # 🌟 STEP: AFTER LOGIN
 else:
-    st.session_state.name = f'{st.session_state.user_data.get("first_name", "")} {st.session_state.user_data.get("last_name", "")}'
+    st.session_state.name = f'{st.session_state.user_data.get("First_Name", "")} {st.session_state.user_data.get("Last_Name", "")}'
     st.sidebar.write(f"{T['connected_as'][lang]} {st.session_state.name}")
     if st.sidebar.button(T["logout"][lang]):
         st.session_state.clear()
