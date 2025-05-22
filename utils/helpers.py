@@ -50,15 +50,21 @@ def load_user_from_sheet(email):
 
 def sync_to_sheet(user_data):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
-
-    # Step 1: Try to find row with matching email
     all_rows = get_all_user_records()
     headers= sheet.row_values(1)
+    
+    row_data = []
+    for header in headers:
+        val = user_data.get(header, "")
+        if isinstance(val, list):
+            val = json.dumps(val, ensure_ascii=False)
+            row_data.append(val)
+            
     for i, row in enumerate(all_rows):
         if row.get("email", "").strip().lower() == user_data.get("email","").strip().lower():
-            sheet.update(f"A{i+2}", [list(user_data.values())])  # Update in-place
+            sheet.update(f"A{i+2}", [row_data])  # Update in-place
             return
-    sheet.append_row([user_data.get(header, "") for header in headers])
+    sheet.append_row(row_data)
     # Step 2: If not found, append a new row
 #    sheet.append_row(list(user_data.values()))
     #sheet.append_row([
