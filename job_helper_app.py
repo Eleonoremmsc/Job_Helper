@@ -456,20 +456,27 @@ def run_job_helper_app():
                     with col2:
                         if st.button(T["modify"][lang], key=f"mod_button_{i}"):
                             st.session_state[f"modifying{i}"] = True
+                            st.rerun()
+                            
                         if st.session_state.get(f"modifying_{i}", False):
-                                    new_val = st.text_input(
-                                        T["propose_modify"][lang],
-                                        key=f"mod_text_{i}",
-                                        value=rec  # original suggestion text
-                                    )
+                            new_val = st.text_input(
+                                T["propose_modify"][lang],
+                                key=f"mod_text_{i}",
+                                value=rec  # original suggestion text
+                            )
 
-                                    if st.button(T["save"][lang], key=f"save_mod_{i}"):
-                                        st.session_state.accepted_suggestions.append(new_val.strip())
-                                        st.session_state.recommendations[i] = None
-                                        st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
-                                        sync_to_sheet(st.session_state.user_data)
-                                        st.session_state[f"modifying_{i}"] = False
-                                        st.rerun()
+                        if st.button(T["save"][lang], key=f"save_mod_{i}"):
+                            modified= new_val.strip()
+                            st.session_state.accepted_suggestions.append(modified)
+                            st.session_state.user_data["accepted_suggestions"] = st.session_state.accepted_suggestions
+                            st.session_state.recommendations[i] = None
+                            st.session_state[f"modifying_{i}"] = False
+                            sync_to_sheet(st.session_state.user_data)
+                            st.rerun()
+                            if st.button("Annuler", key=f"cancel_mod_{i}"):
+                                st.session_state[f"modifying_{i}"] = False
+                                st.rerun()
+
 
                     with col3:
                         if st.button(T["reject"][lang], key=f"reject_{i}"):
