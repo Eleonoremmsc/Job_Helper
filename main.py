@@ -5,7 +5,6 @@ from yaml.loader import SafeLoader
 from create_account import create_account
 from utils.gspread_client import get_gspread_client
 from job_helper_app import run_job_helper_app
-from create_account import create_account
 from motivation_letter import run_applications_page
 from utils.helpers import load_user_from_sheet, get_all_user_records
 from utils.language import language_selector
