@@ -35,6 +35,8 @@ def save_user_to_sheet(user_data):
     #        ]])
 
 def load_user_from_sheet(email):
+    if not email:
+        return {}
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
     rows = get_all_user_records()
     for row in rows:
