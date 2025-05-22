@@ -5,60 +5,60 @@ client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
 
 
 def create_beautiful_cv(content: str) -> str:
-    sections = content.strip().split("\n\n")
-    html_sections = []
-
-    for section in sections:
-        lines = section.strip().split("\n")
-        if not lines:
-            continue
-
-        title = lines[0].strip()
-        body = lines[1:] if len(lines) > 1 else []
-
-        # Map section title to a styled HTML heading
-        html = f'<h2 style="border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-top: 32px;">{title}</h2>'
-
-        for line in body:
-            if "|" in line:
-                # Probably a job entry
-                html += f'<p style="margin: 0.3em 0;"><strong>{line}</strong></p>'
-            elif "-" in line and any(char.isdigit() for char in line):
-                # Possibly date or job line
-                html += f'<p style="margin: 0.3em 0;">{line}</p>'
-            else:
-                html += f'<p>{line}</p>'
-
-        html_sections.append(html)
-
-    return f"""
-    <html>
-    <head>
-        <style>
-            body {{
-                font-family: 'Georgia', serif;
-                margin: 40px;
-                color: #000;
-                font-size: 14px;
-                line-height: 1.5;
-            }}
-            h2 {{
-                color: #2e6c80;
-                font-size: 18px;
-                margin-bottom: 10px;
-            }}
-            p {{
-                margin: 0 0 10px;
-            }}
-        </style>
-    </head>
-    <body>
-        {''.join(html_sections)}
-    </body>
-    </html>
-    """
-
-    oldprompt = """
+#    sections = content.strip().split("\n\n")
+#    html_sections = []
+#
+#    for section in sections:
+#        lines = section.strip().split("\n")
+#        if not lines:
+#            continue
+#
+#        title = lines[0].strip()
+#        body = lines[1:] if len(lines) > 1 else []
+#
+#        # Map section title to a styled HTML heading
+#        html = f'<h2 style="border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-top: 32px;">{title}</h2>'
+#
+#        for line in body:
+#            if "|" in line:
+#                # Probably a job entry
+#                html += f'<p style="margin: 0.3em 0;"><strong>{line}</strong></p>'
+#            elif "-" in line and any(char.isdigit() for char in line):
+#                # Possibly date or job line
+#                html += f'<p style="margin: 0.3em 0;">{line}</p>'
+#            else:
+#                html += f'<p>{line}</p>'
+#
+#        html_sections.append(html)
+#
+#    return f"""
+#    <html>
+#    <head>
+#        <style>
+#            body {{
+#                font-family: 'Georgia', serif;
+#                margin: 40px;
+#                color: #000;
+#                font-size: 14px;
+#                line-height: 1.5;
+#            }}
+#            h2 {{
+#                color: #2e6c80;
+#                font-size: 18px;
+#                margin-bottom: 10px;
+#            }}
+#            p {{
+#                margin: 0 0 10px;
+#            }}
+#        </style>
+#    </head>
+#    <body>
+#        {''.join(html_sections)}
+#    </body>
+#    </html>
+#    """
+#
+    prompt = """
 
     Tu es un assistant bienveillant qui aide à enrichir des profils pour un CV.
     Voici un profil utilisateur :
