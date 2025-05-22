@@ -15,10 +15,11 @@ def save_user_to_sheet(user_data):
     headers= sheet.row_values(1)
     for idx, row in enumerate(records):
         if row.get("Email", "").strip().lower()==user_data.email.strip().lower():
-            sheet.update(f"A{idx+2}", [safe_user_data.get(header, "") for header in headers])
+            values = prepare_user_data_for_sheet(user_data, headers)
+            sheet.update(f"A{idx+2}", [values])
             return
-    safe_user_data = prepare_user_data_for_saving(user_data)
-    sheet.append_row([safe_user_data.get(header, "") for header in headers])
+    safe_user_data = prepare_user_data_for_saving(user_data, headers)
+    sheet.append_row(values)
     #            row.get("First_Name", ""),
     #            row.get("Last_Name", ""),
     #            row.get("Email", ""),
@@ -67,11 +68,11 @@ def sync_to_sheet(user_data):
             
     for i, row in enumerate(all_rows):
         if row.get("email", "").strip().lower() == user_data.get("email","").strip().lower():
-            row_data = [user_data.get(header, "") for header in headers]
-            sheet.update(f"A{i+2}", [row_data])  # Update in-place
+            values = prepare_user_data_for_sheet(user_data, headers)
+            sheet.update(f"A{i+2}", [values])  # Update in-place
             return
-    row_data = [user_data.get(header, "") for header in headers]
-    sheet.append_row(row_data)
+    values = prepare_user_data_for_sheet(user_data, headers)
+    sheet.append_row(values)
     # Step 2: If not found, append a new row
 #    sheet.append_row(list(user_data.values()))
     #sheet.append_row([
@@ -106,3 +107,17 @@ def get_all_user_records():
         records.append(record)
         
     return records
+
+import json
+from datetime import datetime
+
+def prepare_user_data_for_sheet(user_data, headers):
+    safe_data = []
+    for header in headers:
+        value = user_data.get(header, "")
+        if isinstance(value, datetime):
+            value = value.isoformat()
+        elif isinstance(value, list):
+            value = json.dumps(value)
+        safe_data.append(value)
+    return safe_data

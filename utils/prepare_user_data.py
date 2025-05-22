@@ -12,3 +12,5 @@ def prepare_user_data_for_saving(user_data):
         else:
             safe_data[key] = value
     return safe_data
+
+
