@@ -46,12 +46,16 @@ def load_user_from_sheet(email):
 
 def sync_to_sheet(user_data):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
-    emails = [row[3] for row in sheet.get_all_values()[1:]]  # 4th col = Email
 
-    # Avoid duplicates
-    if user_data.get("email") in emails:
-        return  # Already exists
+    # Step 1: Try to find row with matching email
+    all_rows = sheet.get_all_records()
+    for i, row in enumerate(all_rows):
+        if row.get("email") == user_data["email"]:
+            sheet.update(f"A{i+2}", [list(user_data.values())])  # Update in-place
+            return
 
+    # Step 2: If not found, append a new row
+#    sheet.append_row(list(user_data.values()))
     sheet.append_row([
         user_data.get("id", str(uuid.uuid4())),
         user_data.get("first_name", ""),
