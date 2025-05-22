@@ -294,6 +294,9 @@ def run_job_helper_app():
         if st.button(T["generate_recs"][lang]):
             st.session_state.step = "recommend"
             st.rerun()
+        if st.button(T["continue"][lang]):
+            st.session_state.step = "generate"
+            st.rerun()
 
         # Step 2A: Il soumets un Résumé global
     if st.session_state.step == "summary_input":
