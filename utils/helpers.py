@@ -36,7 +36,7 @@ def save_user_to_sheet(user_data):
 
 def load_user_from_sheet(email):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
-    rows = sheet.get_all_user_records()
+    rows = get_all_user_records()
     for row in rows:
         if row.get("Email", "").strip().lower()==email.strip().lower():
             # Parse accepted_suggestions back from JSON
@@ -52,7 +52,7 @@ def sync_to_sheet(user_data):
     sheet = get_worksheet(SPREADSHEET_NAME, SHEET_NAME)
 
     # Step 1: Try to find row with matching email
-    all_rows = sheet.get_all_user_records()
+    all_rows = get_all_user_records()
     headers= sheet.row_values(1)
     for i, row in enumerate(all_rows):
         if row.get("email", "").strip().lower() == user_data.get("email","").strip().lower():
