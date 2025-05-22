@@ -43,8 +43,8 @@ def run_interview_prep():
     # Charge les candidatures si disponibles dans session_state ou feuille
     email = st.session_state.user_data.get("Email") if "user_data" in st.session_state else None
     if email:
-        user_data = load_user_from_sheet(email)
-        applications = user_data.get("applications", [])  # Liste de dicts avec {"title":..., "offer":...}
+        st.session_state.user_data = load_user_from_sheet(email)
+        applications = st.session_state.user_data.get("applications", [])  # Liste de dicts avec {"title":..., "offer":...}
 
         if applications:
             for app in applications:
