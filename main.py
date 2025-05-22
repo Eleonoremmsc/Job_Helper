@@ -8,7 +8,7 @@ from job_helper_app import run_job_helper_app
 from motivation_letter import run_applications_page
 from utils.helpers import load_user_from_sheet, get_all_user_records
 from utils.language import language_selector
-import interview_prep
+from interview_prep import run_interview_prep
 
 T = {
     "login_title": {"fr": "🔐 Connexion", "en": "🔐 Login"},
@@ -86,4 +86,4 @@ else:
 
     elif menu_option == menu_labels[2]:
         st.subheader(menu_labels[2])
-        interview_prep()  # ✅ NEW
+        run_interview_prep()  # ✅ NEW
