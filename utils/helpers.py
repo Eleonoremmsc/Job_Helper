@@ -53,17 +53,20 @@ def sync_to_sheet(user_data):
     all_rows = get_all_user_records()
     headers= sheet.row_values(1)
     
-    row_data = []
-    for header in headers:
-        val = user_data.get(header, "")
-        if isinstance(val, list):
-            val = json.dumps(val, ensure_ascii=False)
-            row_data.append(val)
+    user_data["accepted_suggestions"] = json.dumps(user_data.get("accepted_suggestions", []))
+    #row_data = []
+    #for header in headers:
+    #    val = user_data.get(header, "")
+    #    if isinstance(val, list):
+    #        val = json.dumps(val, ensure_ascii=False)
+    #        row_data.append(val)
             
     for i, row in enumerate(all_rows):
         if row.get("email", "").strip().lower() == user_data.get("email","").strip().lower():
+            row_data = [user_data.get(header, "") for header in headers]
             sheet.update(f"A{i+2}", [row_data])  # Update in-place
             return
+    row_data = [user_data.get(header, "") for header in headers]
     sheet.append_row(row_data)
     # Step 2: If not found, append a new row
 #    sheet.append_row(list(user_data.values()))
