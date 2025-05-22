@@ -8,12 +8,12 @@ def run_interview_prep():
     st.title("🗣️ Préparation aux Entretiens")
     st.markdown("""
     Bienvenue dans votre assistant d'entraînement aux entretiens.
-    
+
     👉 Vous pouvez répondre à 5 questions courantes et obtenir un feedback immédiat ✨.
-    
+
     💡 *Astuce : Si vous avez créé une candidature dans la section lettre de motivation, vous pouvez aussi vous entraîner sur des questions spécifiques à l'offre !*
     """)
-    
+
     basic_questions = [
         "Pouvez-vous vous présenter en quelques mots ?",
         "Pourquoi postulez-vous à ce poste ?",
@@ -21,9 +21,9 @@ def run_interview_prep():
         "Parlez-moi d'une difficulté que vous avez rencontrée et comment vous l'avez gérée.",
         "Où vous voyez-vous dans 5 ans ?"
     ]
-    
+
     st.subheader("🧪 Questions Générales")
-    
+
     for i, q in enumerate(basic_questions):
         answer = st.text_area(f"{i+1}. {q}", key=f"q{i}")
         if st.button(f"💬 Feedback sur ma réponse {i+1}", key=f"f{i}"):
@@ -36,16 +36,16 @@ def run_interview_prep():
                     ]
                 )
                 st.markdown(response.choices[0].message.content)
-    
+
     st.divider()
     st.subheader("🎯 Questions Spécifiques aux Candidatures")
-    
+
     # Charge les candidatures si disponibles dans session_state ou feuille
     email = st.session_state.user_data.get("email") if "user_data" in st.session_state else None
     if email:
         user_data = load_user_from_sheet(email)
         applications = user_data.get("applications", [])  # Liste de dicts avec {"title":..., "offer":...}
-    
+
         if applications:
             for app in applications:
                 job_title = app.get("title")
@@ -64,5 +64,4 @@ def run_interview_prep():
         else:
             st.info("Aucune candidature trouvée. Créez une lettre de motivation pour accéder à cette fonctionnalité.")
     else:
-        st.warning("Veuillez d'abord créer un profil pour accéder à cette fonctionnalité.")
-    
+        st.warning("Veuillez d'abord créer une candidature dans 'Mes candidatures' pour accéder à cette fonctionnalité.")
