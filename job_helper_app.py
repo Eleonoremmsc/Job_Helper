@@ -473,9 +473,9 @@ def run_job_helper_app():
     # Step 4: DOCX generation
     if st.session_state.step == "generate":
         email = st.session_state.user_data.get("email")
-        user_data = load_user_from_sheet(email)
-        st.session_state.user_data = user_data
-        st.session_state.accepted_suggestions = user_data.get("accepted_suggestions", [])
+        user = load_user_from_sheet(email)
+        st.session_state.user_data = user
+        st.session_state.accepted_suggestions = user.get("accepted_suggestions", [])
 
         
         st.subheader(T["final_result"][lang])
