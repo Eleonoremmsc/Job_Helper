@@ -1,7 +1,7 @@
 import datetime
 from datetime import datetime
 from create_account import get_worksheet
-from prepare_user_data import prepare_user_data_for_saving
+from utils.prepare_user_data import prepare_user_data_for_saving
 import uuid
 import json
 
