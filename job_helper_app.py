@@ -532,7 +532,7 @@ def run_job_helper_app():
         )
 
         cv_content = response.choices[0].message.content.strip()
-
+        edited_html = st.text_area(T["modify_cv"][lang], value=cv_content, height=600)
         html_cv = create_beautiful_cv(cv_content)  # This is GPT's output
         st.components.v1.html(html_cv, height=1000, scrolling=True)
 
