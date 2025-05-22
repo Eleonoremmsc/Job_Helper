@@ -67,7 +67,7 @@ def sync_to_sheet(user_data):
     #        row_data.append(val)
             
     for i, row in enumerate(all_rows):
-        if row.get("email", "").strip().lower() == user_data.get("email","").strip().lower():
+        if row.get("Email", "").strip().lower() == user_data.get("email","").strip().lower():
             values = prepare_user_data_for_sheet(user_data, headers)
             sheet.update(f"A{i+2}", [values])  # Update in-place
             return
