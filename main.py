@@ -7,7 +7,7 @@ from utils.gspread_client import get_gspread_client
 from job_helper_app import run_job_helper_app
 from create_account import create_account
 from motivation_letter import run_applications_page
-from utils.helpers import load_user_from_sheet
+from utils.helpers import load_user_from_sheet, get_all_user_records
 from utils.language import language_selector
 import interview_prep
 
@@ -49,8 +49,8 @@ if not st.session_state.login_success:
     col1, col2 = st.columns(2)
     with col1:
         if st.button(T["login"][lang]):
-            sheet_records = sheet.get_all_records()
-            user_info = next((row for row in sheet_records if row["Email"].lower().strip() == email.lower().strip()), None)
+            sheet_records= get_all_user_records()
+            user_info = next((row for row in sheet_records if row.get("Email", "").strip().lower()==email.strip().lower()), None)
 
             if user_info and bcrypt.checkpw(password.encode(), user_info["Hashed_Password"].encode()):
                 st.session_state.login_success = True
