@@ -1,6 +1,7 @@
 import datetime
 from datetime import datetime
 from create_account import get_worksheet
+from prepare_user_data import prepare_user_data_for_saving
 import uuid
 import json
 
@@ -14,9 +15,10 @@ def save_user_to_sheet(user_data):
     headers= sheet.row_values(1)
     for idx, row in enumerate(records):
         if row.get("Email", "").strip().lower()==user_data.email.strip().lower():
-            sheet.update(f"A{idx+2}", [user_data.get(header, "") for header in headers])
+            sheet.update(f"A{idx+2}", [safe_user_data.get(header, "") for header in headers])
             return
-    sheet.append_row([user_data.get(header, "") for header in headers])
+    safe_user_data = prepare_user_data_for_saving(user_data)
+    sheet.append_row([safe_user_data.get(header, "") for header in headers])
     #            row.get("First_Name", ""),
     #            row.get("Last_Name", ""),
     #            row.get("Email", ""),
