@@ -68,7 +68,7 @@ def create_account():
             hashed_pw,
             "",
             "", "", "", "", "", "", "", "", "",
-            date
+            str(date)
         ]  # Fill with empty profile fields
 
         sheet.append_row(new_row)
