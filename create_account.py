@@ -37,7 +37,6 @@ def create_account():
     
     uid = generate_user_id()
     name = st.text_input("Prénom" if lang == "fr" else "First Name")
-    name = st.text_input("Prénom" if lang == "fr" else "First Name")
     email = st.text_input("Email")
     password = st.text_input("Mot de passe" if lang == "fr" else "Password", type="password")
     confirm = st.text_input("Confirmez le mot de passe" if lang == "fr" else "Confirm password", type="password")
