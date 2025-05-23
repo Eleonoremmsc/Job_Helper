@@ -59,7 +59,7 @@ def create_account():
             return
 
         hashed_pw = hash_password(password)
-
+        date= datetime.now()
         new_row = [
             uid,
             name,
@@ -68,7 +68,7 @@ def create_account():
             hashed_pw,
             "",
             "", "", "", "", "", "", "", "", "",
-            datetime.now()
+            date
         ]  # Fill with empty profile fields
 
         sheet.append_row(new_row)
