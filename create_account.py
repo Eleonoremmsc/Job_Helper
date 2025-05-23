@@ -65,7 +65,6 @@ def create_account():
             name,
             "",
             email,
-            "",
             hashed_pw,
             "",
             "", "", "", "", "", "", "", "", "",
